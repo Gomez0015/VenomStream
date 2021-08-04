@@ -106,10 +106,8 @@ async function getMoviesToShow(pageObject, movies, query) {
         while (moviesArray.length) {
             newArr[moviesArray.length % 2 === 0 ? 'push' : 'unshift'](moviesArray.pop());
         }
-
         moviesArray = newArr;
     }
-
     return { moviesArray: moviesArray.reverse(), categories: arrayOfCategories };
 }
 
@@ -119,7 +117,8 @@ router.get('/', async function(req, res, next) {
     var pageObject = getCurrentPage(req);
     var moviesArray = await Movies.find();
     var moviesObject = await getMoviesToShow(pageObject, moviesArray.reverse());
-    if (moviesObject.moviesArray.length == 0) {
+
+    if (moviesObject.moviesArray[0] == undefined) {
         pageObject.currentPage -= 1;
         moviesObject = await getMoviesToShow(pageObject, moviesArray.reverse());
     }
@@ -432,17 +431,17 @@ router.get('/search', async function(req, res, next) {
 
     var pageObject = getCurrentPage(req);
     var moviesObject = await getMoviesToShow(pageObject, movies);
-    if (moviesObject.moviesArray.length == 0) {
+    if (moviesObject.moviesArray[0] == undefined) {
         pageObject.currentPage -= 1;
-        moviesObject = await getMoviesToShow(pageObject, movies);
+        moviesObject = await getMoviesToShow(pageObject, moviesArray.reverse());
     }
 
-    moviesObject.moviesArray = mySort(movies, searchQuery);
+    moviesObject.moviesArray = mySort(moviesObject.moviesArray, searchQuery);
 
     if (sess.username != null) {
-        res.render('index', { title: 'VenomStream', moviesArray: moviesObject.moviesArray, categories: moviesObject.categories, username: sess.username, favorites: sess.favorites, currentPage: pageObject.currentPage, themeColor: req.session.themeColor });
+        res.render('index', { title: 'VenomStream', moviesArray: moviesObject.moviesArray, searchLink: true, username: sess.username, favorites: sess.favorites, currentPage: pageObject.currentPage, themeColor: req.session.themeColor });
     } else {
-        res.render('index', { title: 'VenomStream', moviesArray: moviesObject.moviesArray, categories: moviesObject.categories, currentPage: pageObject.currentPage, themeColor: req.session.themeColor });
+        res.render('index', { title: 'VenomStream', moviesArray: moviesObject.moviesArray, searchLink: true, currentPage: pageObject.currentPage, themeColor: req.session.themeColor });
     }
 });
 
@@ -483,9 +482,9 @@ router.get('/listFavorites', async function(req, res, next) {
     }
     var pageObject = getCurrentPage(req);
     var moviesObject = await getMoviesToShow(pageObject, favoritesArray.reverse());
-    if (moviesObject.moviesArray.length == 0) {
+    if (moviesObject.moviesArray[0] == undefined) {
         pageObject.currentPage -= 1;
-        moviesObject = await getMoviesToShow(pageObject, favoritesArray.reverse());
+        moviesObject = await getMoviesToShow(pageObject, moviesArray.reverse());
     }
     res.render('index', { title: 'VenomStream', moviesArray: moviesObject.moviesArray, categories: moviesObject.categories, username: sess.username, favorites: sess.favorites, currentPage: pageObject.currentPage, themeColor: req.session.themeColor });
 });
@@ -497,9 +496,9 @@ router.get('/listRatings', async function(req, res, next) {
     var moviesArray = await Movies.find();
     var pageObject = getCurrentPage(req);
     var moviesObject = await getMoviesToShow(pageObject, moviesArray, "rating");
-    if (moviesObject.moviesArray.length == 0) {
+    if (moviesObject.moviesArray[0] == undefined) {
         pageObject.currentPage -= 1;
-        moviesObject = await getMoviesToShow(pageObject, moviesArray, "rating");
+        moviesObject = await getMoviesToShow(pageObject, moviesArray.reverse());
     }
     res.render('index', { title: 'VenomStream', moviesArray: moviesObject.moviesArray.reverse(), categories: moviesObject.categories, username: sess.username, favorites: sess.favorites, currentPage: pageObject.currentPage, themeColor: req.session.themeColor });
 });
@@ -514,9 +513,9 @@ router.get('/listByLanguage', async function(req, res, next) {
             filteredMovies = filteredMovies.reverse();
             var pageObject = getCurrentPage(req);
             var moviesObject = await getMoviesToShow(pageObject, filteredMovies);
-            if (moviesObject.moviesArray.length == 0) {
+            if (moviesObject.moviesArray[0] == undefined) {
                 pageObject.currentPage -= 1;
-                moviesObject = await getMoviesToShow(pageObject, filteredMovies);
+                moviesObject = await getMoviesToShow(pageObject, moviesArray.reverse());
             }
             if (sess.username != null) {
                 res.render('index', { title: 'VenomStream', moviesArray: moviesObject.moviesArray, categories: moviesObject.categories, username: sess.username, favorites: sess.favorites, currentPage: pageObject.currentPage, themeColor: req.session.themeColor });
@@ -530,9 +529,9 @@ router.get('/listByLanguage', async function(req, res, next) {
             filteredMovies = filteredMovies.reverse();
             var pageObject = getCurrentPage(req);
             var moviesObject = await getMoviesToShow(pageObject, filteredMovies);
-            if (moviesObject.moviesArray.length == 0) {
+            if (moviesObject.moviesArray[0] == undefined) {
                 pageObject.currentPage -= 1;
-                moviesObject = await getMoviesToShow(pageObject, filteredMovies);
+                moviesObject = await getMoviesToShow(pageObject, moviesArray.reverse());
             }
             if (sess.username != null) {
                 res.render('index', { title: 'VenomStream', moviesArray: moviesObject.moviesArray, categories: moviesObject.categories, username: sess.username, favorites: sess.favorites, currentPage: pageObject.currentPage, themeColor: req.session.themeColor });

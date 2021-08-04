@@ -136,38 +136,42 @@ block content
               h2= movie.name
               a(href="sodaplayer:?url=" + movie.magnet_link + "&title=" + movie.name onclick="(function(){ document.getElementById('myModal#{i}').style.display = 'none'; })();return true;") Stream
         script.
-          var genre#{i} = ("#{movie.genres[0]}".replace("&amp;", "&"));
-          if (document.getElementById(genre#{i}) == undefined) {
-            var li = document.createElement("li");
-            $(li).addClass("categoryHolder");
-            $(li).addClass("unselectable");
-            li.id = genre#{i};
-            var h2 = document.createElement("h2");
-            $(h2).addClass("categoryName");
-            h2.textContent = genre#{i};
-            var icon = document.createElement("span");
-            $(icon).addClass("fas");
-            $(icon).addClass("fa-chevron-right");
-            $(icon).addClass("categoryIcon");
-            icon.onclick = function() {categorySlide("right", genre#{i});}
-            var icon2 = document.createElement("span");
-            icon2.onclick = function() {categorySlide("left", genre#{i});}
-            $(icon2).addClass("fas");
-            $(icon2).addClass("fa-chevron-left");
-            $(icon2).addClass("categoryIcon");
-            var div = document.createElement("div");
-            $(div).addClass("categoryTopHolder");
-            var hr = document.createElement("hr");
-            $(hr).addClass("categoryLine");
-            div.appendChild(icon2);
-            div.appendChild(h2);
-            div.appendChild(icon);
-            li.appendChild(div);
-            li.appendChild(hr);
-            document.getElementsByClassName("cardsUl")[0].appendChild(li);
-            document.getElementById(genre#{i}).appendChild(document.getElementById("li#{i}"));
+          if("#{searchLink}" != "true") {
+            var genre#{i} = ("#{movie.genres[0]}".replace("&amp;", "&"));
+            if (document.getElementById(genre#{i}) == undefined) {
+              var li = document.createElement("li");
+              $(li).addClass("categoryHolder");
+              $(li).addClass("unselectable");
+              li.id = genre#{i};
+              var h2 = document.createElement("h2");
+              $(h2).addClass("categoryName");
+              h2.textContent = genre#{i};
+              var icon = document.createElement("span");
+              $(icon).addClass("fas");
+              $(icon).addClass("fa-chevron-right");
+              $(icon).addClass("categoryIcon");
+              icon.onclick = function() {categorySlide("right", genre#{i});}
+              var icon2 = document.createElement("span");
+              icon2.onclick = function() {categorySlide("left", genre#{i});}
+              $(icon2).addClass("fas");
+              $(icon2).addClass("fa-chevron-left");
+              $(icon2).addClass("categoryIcon");
+              var div = document.createElement("div");
+              $(div).addClass("categoryTopHolder");
+              var hr = document.createElement("hr");
+              $(hr).addClass("categoryLine");
+              div.appendChild(icon2);
+              div.appendChild(h2);
+              div.appendChild(icon);
+              li.appendChild(div);
+              li.appendChild(hr);
+              document.getElementsByClassName("cardsUl")[0].appendChild(li);
+              document.getElementById(genre#{i}).appendChild(document.getElementById("li#{i}"));
+            } else {
+              document.getElementById(genre#{i}).appendChild(document.getElementById("li#{i}"));
+            }
           } else {
-            document.getElementById(genre#{i}).appendChild(document.getElementById("li#{i}"));
+            document.getElementById("cardsUl").style = "padding-left: 100px;"
           }
   if currentPage != undefined
     if moviesArray.length >= 24
