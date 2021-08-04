@@ -1,0 +1,20 @@
+doctype html
+
+html(class=themeColor)
+  head
+    link(rel='stylesheet', href='/stylesheets/fontawesome/css/all.css')
+    link(rel='stylesheet', href='/stylesheets/flag-icon-css-master/css/flag-icon.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    title= title
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js")
+    script(src="https://cdn.jsdelivr.net/npm/webtorrent@latest/webtorrent.min.js")
+    link(rel="icon" href="/images/venom.png" type="image/x-icon")
+    //- Global site tag (gtag.js) - Google Analytics
+    script(async src="https://www.googletagmanager.com/gtag/js?id=G-MH6KFVN46G")
+    script.
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-MH6KFVN46G');
+  body
+    block content

@@ -1,0 +1,116 @@
+doctype html
+html(lang='en')
+  head
+    link(rel="icon" href="/images/venom.png" type="image/x-icon")
+    // Required meta tags
+    meta(charset='utf-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    title VenomStream
+    meta(name='description' content='Knight is a beautiful Bootstrap 4 template for product landing pages.')
+    // Inter UI font
+    link(href='https://rsms.me/inter/inter-ui.css' rel='stylesheet')
+    // vendors styles
+    link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
+    link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css')
+    link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css')
+    // Bootstrap CSS / Color Scheme
+    link#theme-color(rel='stylesheet' href='site/css/default.css')
+    //- Global site tag (gtag.js) - Google Analytics
+    script(async src="https://www.googletagmanager.com/gtag/js?id=G-MH6KFVN46G")
+    script.
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-MH6KFVN46G');
+  body
+    // hero header
+    section#home.py-7.py-md-0.bg-hero
+      .container
+        .row.vh-md-100
+          .col-md-8.col-sm-10.col-12.mx-auto.my-auto.text-center
+            h1.heading-black.text-capitalize VenomStream
+            p.lead.py-3
+              | Watch Anything, Anytime.
+              br
+              | (No bullshit, No ads)
+            //- href="/packages/VenomStreamPackage.zip"
+            a.btn.btn-primary.d-inline-flex.flex-row.align-items-center(style="color: black;")
+              | Download Now
+              em.ml-2(data-feather='download')
+    // features section
+    section#features.pt-6.pb-7
+      .container
+        .row
+          .col-md-6.mx-auto.text-center
+            h2.heading-black VenomStream offers everything you need.
+            p.text-muted.lead
+              | One Streaming Service,
+              | no ads, every movie and show, no payments.
+        .row.mt-5
+          .col-md-10.mx-auto
+            .row.feature-boxes
+              .col-md-12.box
+                .icon-box.box-success
+                  .icon-box-inner
+                    span(data-feather='monitor' width='35' height='35')
+                h5 Unlimited devices
+                p.text-muted
+                  | Works on any computer device all for free
+              .col-md-6.box
+                .icon-box.box-danger
+                  .icon-box-inner
+                    span(data-feather='layout' width='35' height='35')
+                h5 Easy to use
+                p.text-muted
+                  | Only takes a couple of clicks to get working.
+              .col-md-6.box
+                .icon-box.box-info
+                  .icon-box-inner
+                    span(data-feather='globe' width='35' height='35')
+                h5 Available globally
+                p.text-muted
+                  | Movies and Shows in French and English with subtitles
+    // faq section
+    section#faq.py-7
+      .container
+        .row
+          .col-md-6.mx-auto.text-center
+            h2 Frequently asked questions
+            p.text-muted.lead Answers to most common questions.
+        .row.mt-5
+          .col-md-10.mx-auto
+            .row
+              .col-md-6.mb-5
+                h6 Can I try it for free?
+                p.text-muted
+                  | Yes and forever.
+              .col-md-6.mb-5
+                h6 Do you have hidden fees?
+                p.text-muted
+                  | No hidden fees.
+              .col-md-6.mb-5
+                h6 What are the payment methods you accept?
+                p.text-muted
+                  | If you want to donate you can using Paypal and Credit Card.
+              .col-md-6.mb-5
+                h6 How often do you release updates?
+                p.text-muted
+                  | Every Week!
+              .col-md-6.mb-5
+                h6 What is your refund policy?
+                p.text-muted
+                  | No refunds. Dont have time for that shit.
+              .col-md-6.mb-5
+                h6 How can I contact you?
+                p.text-muted
+                  | email me at ceo@venomstream.com
+    // scroll to top
+    .scroll-top
+      i.fa.fa-angle-up(aria-hidden='true')
+    // jQuery first, then Popper.js, then Bootstrap JS
+    script(src='https://code.jquery.com/jquery-3.2.1.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.7.3/feather.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js')
+    script(src='site/js/scripts.js')
