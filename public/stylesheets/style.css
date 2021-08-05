@@ -130,10 +130,6 @@ ul {
     width: 100%;
 }
 
-.pageSelectorsTop {
-    padding-top: 70px;
-}
-
 
 /* Card */
 
@@ -292,24 +288,6 @@ img {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-
-.pageSelectors {
-    text-align: center;
-    width: 100%;
-}
-
-.pageSelectors form button i {
-    color: var(--main);
-}
-
-.loadMoreButton {
-    margin: 25px;
-    border: none;
-    padding: 0;
-    background-color: Transparent;
-    background-repeat: no-repeat;
-    cursor: pointer;
 }
 
 
@@ -639,4 +617,208 @@ a:visited {
 
 #menuToggle .burgerInput:checked~ul {
     transform: none;
+}
+
+
+/* Loading Bar */
+
+@-webkit-keyframes loader {
+    0% {
+        width: 0;
+    }
+    20% {
+        width: 10%;
+    }
+    25% {
+        width: 24%;
+    }
+    43% {
+        width: 41%;
+    }
+    56% {
+        width: 50%;
+    }
+    66% {
+        width: 52%;
+    }
+    71% {
+        width: 60%;
+    }
+    75% {
+        width: 76%;
+    }
+    94% {
+        width: 86%;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+@keyframes loader {
+    0% {
+        width: 0;
+    }
+    20% {
+        width: 10%;
+    }
+    25% {
+        width: 24%;
+    }
+    43% {
+        width: 41%;
+    }
+    56% {
+        width: 50%;
+    }
+    66% {
+        width: 52%;
+    }
+    71% {
+        width: 60%;
+    }
+    75% {
+        width: 76%;
+    }
+    94% {
+        width: 86%;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+.progress-bar {
+    border-radius: 60px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.progress-bar span {
+    display: block;
+}
+
+.bar {
+    background: rgba(0, 0, 0, 0.075);
+}
+
+.progress {
+    -webkit-animation: loader 22s ease-out forwards;
+    animation: loader 22s ease-out forwards;
+    background: var(--main);
+    color: #fff;
+    padding: 5px;
+    width: 0;
+}
+
+.progress-bar {
+    left: 50%;
+    max-width: 50%;
+    display: block;
+    margin-top: 15px;
+    transform: translate3d(+50%, +50%, 0);
+}
+
+
+/* Page Selectors */
+
+.loadMoreButton {
+    border: none;
+    padding: 0;
+    background-color: Transparent;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pageSelectorsContainer {
+    background: var(--main);
+    padding: 1rem;
+    margin: 3rem auto;
+    border-radius: 0.2rem;
+    box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.3);
+    text-align: center;
+    margin-top: 100px;
+}
+
+.pageSelectorsContainer:after {
+    clear: both;
+    content: "";
+    display: table;
+}
+
+.pageSelectorsContainer ul {
+    width: 100%;
+}
+
+.xsmall {
+    width: 14rem;
+}
+
+.paginationLi:hover a {
+    color: var(--main);
+    background-color: #1d1f20;
+    border: solid 1px #1d1f20;
+}
+
+.paginationLi.active a {
+    color: var(--main);
+    background-color: #1d1f20;
+    border: solid 1px #1d1f20;
+}
+
+.paginationLi:first-child {
+    float: left;
+}
+
+.paginationLi:first-child a:after {
+    content: "Previous";
+}
+
+.paginationLi:last-child {
+    float: right;
+}
+
+.paginationLi:last-child a:after {
+    content: "Next";
+}
+
+.paginationLi a {
+    border: solid 1px var(--main-bg);
+    border-radius: 0.2rem;
+    color: var(--main-bg);
+    text-decoration: none;
+    text-transform: uppercase;
+    display: inline-block;
+    text-align: center;
+    padding: 0.5rem 0.9rem;
+}
+
+.xsmall li {
+    display: none;
+}
+
+.xsmall li.active {
+    display: inline;
+}
+
+.xsmall li:first-child {
+    display: inline;
+}
+
+.xsmall li:first-child a:after {
+    content: "Prev";
+}
+
+.xsmall li:last-child {
+    display: inline;
+}
+
+.xsmall li:last-child a:after {
+    content: "Next";
 }

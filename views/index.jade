@@ -52,17 +52,23 @@ block content
         a.dbox-donation-button.rightNav(href='https://donorbox.org/venom-stream-funding?default_interval=o') Donate
 
   if currentPage != undefined
-    div.pageSelectors.pageSelectorsTop
-      form.pageSel(method="get" style="display: inline")
-        input(type="hidden" name="currentPage" value=(parseInt(currentPage) - 1)) 
-        input(type="hidden" name="action" value="previous") 
-        button(type="submit" class="loadMoreButton")
-          i(class="far fa-arrow-alt-circle-right fa-rotate-180" style="font-size: 32px" onmouseover="switchClass(this)" onmouseleave="switchClass(this)")
-      form.pageSel(method="get" style="display: inline")
-        input(type="hidden" name="currentPage" value=(parseInt(currentPage) + 1)) 
-        input(type="hidden" name="action" value="next") 
-        button(onclick="submit" class="loadMoreButton")
-          i(class="far fa-arrow-alt-circle-right" style="font-size: 32px" onmouseover="switchClass(this)" onmouseleave="switchClass(this)")
+    .pageSelectorsContainer.xsmall
+      .pagination
+        ul
+          li.paginationLi
+            form.pageSel(method="get" style="display: inline")
+              input(type="hidden" name="currentPage" value=(parseInt(currentPage) - 1)) 
+              input(type="hidden" name="action" value="previous") 
+              button(onclick="submit" class="loadMoreButton")
+                a
+          li.active.paginationLi
+            a= currentPage
+          li.paginationLi
+            form.pageSel(method="get" style="display: inline")
+              input(type="hidden" name="currentPage" value=(parseInt(currentPage) + 1)) 
+              input(type="hidden" name="action" value="next") 
+              button(onclick="submit" class="loadMoreButton")
+                a
       script.
         document.getElementsByClassName("pageSel")[0].action = window.location.href.replace("#last", "") + "#last";
         document.getElementsByClassName("pageSel")[1].action = window.location.href.replace("#last", "") + "#last";
@@ -175,17 +181,23 @@ block content
           }
   if currentPage != undefined
     if moviesArray.length >= 24
-      div.pageSelectors
-        form.pageSel(method="get" style="display: inline")
-          input(type="hidden" name="currentPage" value=(parseInt(currentPage) - 1)) 
-          input(type="hidden" name="action" value="previous") 
-          button(type="submit" class="loadMoreButton")
-            i(class="far fa-arrow-alt-circle-right fa-rotate-180" style="font-size: 32px" onmouseover="switchClass(this)" onmouseleave="switchClass(this)")
-        form.pageSel(method="get" style="display: inline")
-          input(type="hidden" name="currentPage" value=(parseInt(currentPage) + 1)) 
-          input(type="hidden" name="action" value="next") 
-          button(onclick="submit" class="loadMoreButton")
-            i(class="far fa-arrow-alt-circle-right" style="font-size: 32px" onmouseover="switchClass(this)" onmouseleave="switchClass(this)")
+      .pageSelectorsContainer.xsmall
+        .pagination
+          ul
+            li.paginationLi
+              form.pageSel(method="get" style="display: inline")
+                input(type="hidden" name="currentPage" value=(parseInt(currentPage) - 1)) 
+                input(type="hidden" name="action" value="previous") 
+                button(onclick="submit" class="loadMoreButton")
+                  a
+            li.active.paginationLi
+              a= currentPage
+            li.paginationLi
+              form.pageSel(method="get" style="display: inline")
+                input(type="hidden" name="currentPage" value=(parseInt(currentPage) + 1)) 
+                input(type="hidden" name="action" value="next") 
+                button(onclick="submit" class="loadMoreButton")
+                  a
         script.
           document.getElementsByClassName("pageSel")[2].action = window.location.href.replace("#last", "") + "#last";
           document.getElementsByClassName("pageSel")[3].action = window.location.href.replace("#last", "") + "#last";
@@ -225,18 +237,18 @@ block content
   div(id="myModal" class="modal")
     div(class="modal-content")
       span(class="close" onclick="(function(){ document.getElementById('myModal').style.display = 'none' })();return false;") &times;
-      h2 Add a movie/tvshow using title
-      form(method="post" action="/app/addmovie")
-        select.burgerSelect(type="select" name="type" style="margin-top: 15px;") 
+      h2 Add something using title
+      form(method="post" action="/app/addmovie" id="addMovieModal")
+        select.burgerSelect(type="select" name="type" style="margin-top: 15px;" id="MovieType") 
           option(value="movie") Movie
           option(value="show") TV Show
           option(value="anime") Anime
-        select.burgerSelect(type="select" name="language") 
+        select.burgerSelect(type="select" name="language" id="MovieLang") 
           option(value="en") English
           option(value="fr") French
         br
-        input.burgerSearch(type="text" name="movieTitle")
-        button.burgerButton(type="submit") Submit
+        input.burgerSearch(type="text" name="movieTitle" id="MovieTitle")
+        button.burgerButton(type="submit" id="addMovieSubmit") Submit
 
   script(src='/javascripts/index.js')
 

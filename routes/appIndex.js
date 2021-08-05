@@ -176,7 +176,9 @@ router.post('/addmovie', async function(req, res, next) {
             }, (error) => {
                 console.log(error);
             });
-
+        if (movieData == undefined) {
+            res.send({ info: "Movie not found", type: 'error' });
+        }
         var movieDataExtended = null;
         await axios({
                 method: 'get',
@@ -194,9 +196,9 @@ router.post('/addmovie', async function(req, res, next) {
         const movieCheck = await Movies.find({ name: movieTitle, language: language });
 
         if (movieCheck[0] != undefined) {
-            console.log("Movie Is a Duplicate");
-            req.session.info = "Movie Is a Duplicate"
-            res.redirect('/app/');
+            res.send({ info: "Movie is a Duplicate", type: 'error' });
+        } else if (movieDataExtended.genres.length == 0) {
+            res.send({ info: "Movie info had an error", type: 'error' });
         } else {
             TorrentSearchApi.disableAllProviders();
             if (language == 'fr') {
@@ -208,13 +210,11 @@ router.post('/addmovie', async function(req, res, next) {
                 (function loop() {
                     setTimeout(async function() {
                         if (timeSinceStart >= 20000) {
-                            console.log("Timed Out after 20 Seconds");
-                            req.session.info = "Timed Out after 20 Seconds"
-                            res.redirect('/app/');
+                            res.send({ info: "Timed Out after 20 Seconds", type: 'error' });
                         } else if (torrents[0] != undefined) {
                             var magnet = await TorrentSearchApi.getMagnet(torrents[0]);
                             await Movies.create({ name: movieTitle, description: movieData.overview, rating: movieData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + movieData.poster_path, magnet_link: magnet, popularity: movieData.popularity, full_torrent: torrents[0], movieID: Math.random().toString(36).substr(2, 9), genres: [movieDataExtended.genres[0].name] });
-                            res.redirect('/app/');
+                            res.send({ info: "Movie Added", type: "success" });
                         } else {
                             timeSinceStart += 500;
                             loop()
@@ -229,13 +229,11 @@ router.post('/addmovie', async function(req, res, next) {
                 (function loop() {
                     setTimeout(async function() {
                         if (timeSinceStart >= 20000) {
-                            console.log("Timed Out after 20 Seconds");
-                            req.session.info = "Timed Out after 20 Seconds"
-                            res.redirect('/app/');
+                            res.send({ info: "Timed Out after 20 Seconds", type: 'error' });
                         } else if (torrents[0] != undefined) {
                             var magnet = await TorrentSearchApi.getMagnet(torrents[0]);
                             await Movies.create({ name: movieTitle, description: movieData.overview, rating: movieData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + movieData.poster_path, magnet_link: magnet, popularity: movieData.popularity, full_torrent: torrents[0], movieID: Math.random().toString(36).substr(2, 9), genres: [movieDataExtended.genres[0].name] });
-                            res.redirect('/app/');
+                            res.send({ info: "Movie Added", type: "success" });
                         } else {
                             timeSinceStart += 500;
                             loop()
@@ -258,8 +256,7 @@ router.post('/addmovie', async function(req, res, next) {
                 console.log(error);
             });
         if (showData == undefined) {
-            req.session.info = "Show does not Exist"
-            res.redirect('/app/');
+            res.send({ info: "Show was not found", type: "error" });
         }
         var tvShowID = showData.id;
 
@@ -272,6 +269,9 @@ router.post('/addmovie', async function(req, res, next) {
             }, (error) => {
                 console.log(error);
             });
+        if (showData.seasons.length == 0) {
+            res.send({ info: "Show was not found", type: "error" });
+        }
 
         TorrentSearchApi.disableAllProviders();
         if (language == 'en') {
@@ -322,11 +322,10 @@ router.post('/addmovie', async function(req, res, next) {
                     var magnet = await TorrentSearchApi.getMagnet(torrents[0]);
                     await Movies.create({ name: showTitle[0], description: showData.overview, rating: showData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + showData.poster_path, magnet_link: magnet, popularity: showData.popularity, movieID: Math.random().toString(36).substr(2, 9), genres: [showData.genres[0].name] });
                     if (seasonsMissing.length <= 0) {
-                        res.redirect('/app/');
+                        res.send({ info: "Tv Show or Anime Added", type: "success" });
                     }
                 } else {
-                    req.session.info = "This is a duplicate."
-                    res.redirect('/app/');
+                    res.send({ info: "This is a duplicate.", type: "error" });
                 }
                 if (seasonsMissing.length > 0) {
                     for (var i = 0; i < seasonsMissing.length; i++) {
@@ -351,7 +350,7 @@ router.post('/addmovie', async function(req, res, next) {
                             await Movies.create({ name: showTitle[i], description: showData.overview, rating: showData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + showData.poster_path, magnet_link: magnet, popularity: showData.popularity, movieID: Math.random().toString(36).substr(2, 9), genres: [showData.genres[0].name] });
                         }
                     }
-                    res.redirect('/app/');
+                    res.send({ info: "Tv Show or Anime Added", type: "success" });
                 }
             } else {
                 for (var i = 0; i < showData.seasons.length; i++) {
@@ -375,7 +374,7 @@ router.post('/addmovie', async function(req, res, next) {
                         await Movies.create({ name: showTitle[i], description: showData.overview, rating: showData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + showData.poster_path, magnet_link: magnet, popularity: showData.popularity, movieID: Math.random().toString(36).substr(2, 9), genres: [showData.genres[0].name] });
                     }
                 }
-                res.redirect('/app/');
+                res.send({ info: "Tv Show or Anime Added", type: "success" });
             }
 
         } else {
@@ -389,19 +388,21 @@ router.post('/addmovie', async function(req, res, next) {
                     torrentsArray.push(torrents[0]);
                 }
             }
-
-            for (var i = 0; i < torrentsArray.length; i++) {
-                const showCheck = await Movies.find({ name: showTitle[i], language: language });
-                if (showCheck[0] == undefined) {
-                    var magnet = await TorrentSearchApi.getMagnet(torrentsArray[i]);
-                    await Movies.create({ name: showTitle[i], description: showData.overview, rating: showData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + showData.poster_path, magnet_link: magnet, popularity: showData.popularity, movieID: Math.random().toString(36).substr(2, 9), genres: [showData.genres[0].name] });
+            if (torrentsArray.length != 0) {
+                for (var i = 0; i < torrentsArray.length; i++) {
+                    const showCheck = await Movies.find({ name: showTitle[i], language: language });
+                    if (showCheck[0] == undefined) {
+                        var magnet = await TorrentSearchApi.getMagnet(torrentsArray[i]);
+                        await Movies.create({ name: showTitle[i], description: showData.overview, rating: showData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + showData.poster_path, magnet_link: magnet, popularity: showData.popularity, movieID: Math.random().toString(36).substr(2, 9), genres: [showData.genres[0].name] });
+                    }
                 }
+                res.send({ info: "Tv Show or Anime Added", type: "success" });
+            } else {
+                res.send({ info: "Show Torrent not found", type: "error" });
             }
-            res.redirect('/app/');
         }
     } else {
-        req.session.info = "This Anime language is not available yet."
-        res.redirect('/app/');
+        res.send({ info: "This Anime language is not available yet", type: "error" });
     }
 });
 
@@ -410,7 +411,7 @@ router.get('/search', async function(req, res, next) {
 
     var searchQuery = req.query.searchInput.toLowerCase();
 
-    const movies = await Movies.find();
+    var movies = await Movies.find();
 
     function mySort(arrKeys, searchkey) {
         var matchedKeys = [],
@@ -429,19 +430,21 @@ router.get('/search', async function(req, res, next) {
 
     var sess = req.session;
 
-    var pageObject = getCurrentPage(req);
-    var moviesObject = await getMoviesToShow(pageObject, movies);
-    if (moviesObject.moviesArray[0] == undefined) {
-        pageObject.currentPage -= 1;
-        moviesObject = await getMoviesToShow(pageObject, moviesArray.reverse());
-    }
+    movies = mySort(movies, searchQuery);
 
-    moviesObject.moviesArray = mySort(moviesObject.moviesArray, searchQuery);
+    var pageObject = getCurrentPage(req);
+    // var moviesObject = await getMoviesToShow(pageObject, movies);
+    // if (moviesObject.moviesArray[0] == undefined) {
+    //     pageObject.currentPage -= 1;
+    //     moviesObject = await getMoviesToShow(pageObject, moviesArray.reverse());
+    // }
+
+    // moviesObject.moviesArray = mySort(moviesObject.moviesArray, searchQuery);
 
     if (sess.username != null) {
-        res.render('index', { title: 'VenomStream', moviesArray: moviesObject.moviesArray, searchLink: true, username: sess.username, favorites: sess.favorites, currentPage: pageObject.currentPage, themeColor: req.session.themeColor });
+        res.render('index', { title: 'VenomStream', moviesArray: movies, searchLink: true, username: sess.username, favorites: sess.favorites, currentPage: pageObject.currentPage, themeColor: req.session.themeColor });
     } else {
-        res.render('index', { title: 'VenomStream', moviesArray: moviesObject.moviesArray, searchLink: true, currentPage: pageObject.currentPage, themeColor: req.session.themeColor });
+        res.render('index', { title: 'VenomStream', moviesArray: movies, searchLink: true, currentPage: pageObject.currentPage, themeColor: req.session.themeColor });
     }
 });
 

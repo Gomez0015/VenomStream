@@ -43,6 +43,55 @@ window.onclick = function(event) {
     }
 }
 
+document.getElementById("addMovieSubmit").addEventListener("click", function(e) {
+    e.srcElement.disabled = true;
+    if (!document.getElementById("progressBarSpan")) {
+        var div = document.createElement("div");
+        $(div).addClass("progress-bar");
+        var span = document.createElement("span");
+        $(span).addClass("bar");
+        var span2 = document.createElement("span");
+        $(span2).addClass("progress");
+        span2.id = "progressBarSpan";
+        span2.style.animationPlayState = 'running';
+        span.appendChild(span2);
+        div.appendChild(span);
+        e.preventDefault();
+        document.getElementById("addMovieModal").appendChild(div);
+    } else {
+        document.getElementById("progressBarSpan").style.backgroundColor = "var(--main)";
+        document.getElementById("progressBarSpan").style.animationPlayState = 'running';
+        var elm = document.getElementById("progressBarSpan");
+        var newone = elm.cloneNode(true);
+        elm.parentNode.replaceChild(newone, elm);
+    }
+    if (document.getElementById("addMovieInfo")) {
+        document.getElementById("addMovieInfo").remove();
+    }
+    $.post("/app/addmovie", { type: document.getElementById("MovieType").value, language: document.getElementById("MovieLang").value, movieTitle: document.getElementById("MovieTitle").value }, function(data, status) {
+        console.log(data);
+        if (data.type == "error") {
+            e.srcElement.disabled = false;
+            document.getElementById("progressBarSpan").style.backgroundColor = "red";
+            document.getElementById("progressBarSpan").style.animationPlayState = 'paused';
+            var error = document.createElement("p");
+            error.id = "addMovieInfo"
+            error.textContent = data.info;
+            error.style = "color: red; margin-top: 10px;"
+            document.getElementById("addMovieModal").appendChild(error);
+        } else if (data.type == "success") {
+            e.srcElement.disabled = false;
+            document.getElementById("progressBarSpan").style.backgroundColor = "var(--main)";
+            document.getElementById("progressBarSpan").style.animationDuration = '0s';
+            var error = document.createElement("p");
+            error.id = "addMovieInfo"
+            error.textContent = data.info;
+            error.style = "margin-top: 10px;"
+            document.getElementById("addMovieModal").appendChild(error);
+        }
+    });
+});
+
 function playMovie(index) {
     document.getElementById("myModal" + index).style.display = "block";
 }
@@ -178,23 +227,9 @@ function categorySlide(direction, categoryName) {
     var liToSlide = document.getElementById(categoryName);
     switch (direction) {
         case 'left':
-            // for (var i = 0; i < liToSlide.getElementsByTagName("li").length; i++) {
-            //     var overflowing = checkOverflowWithParent(liToSlide.getElementsByTagName("li")[i]);
-            //     if (overflowing) {
-            //         liToSlide.appendChild(liToSlide.getElementsByTagName("li")[0]);
-            //         i = liToSlide.getElementsByTagName("li").length;
-            //     }
-            // }
             liToSlide.appendChild(liToSlide.getElementsByTagName("li")[0]);
             break;
         case 'right':
-            // for (var i = 0; i < liToSlide.getElementsByTagName("li").length; i++) {
-            //     var overflowing = checkOverflowWithParent(liToSlide.getElementsByTagName("li")[i]);
-            //     if (overflowing) {
-            //         liToSlide.insertBefore(liToSlide.getElementsByTagName("li")[i], liToSlide.getElementsByTagName("li")[0]);
-            //         i = liToSlide.getElementsByTagName("li").length;
-            //     }
-            // }
             liToSlide.insertBefore(liToSlide.getElementsByTagName("li")[liToSlide.getElementsByTagName("li").length - 1], liToSlide.getElementsByTagName("li")[0]);
             break;
         default:
