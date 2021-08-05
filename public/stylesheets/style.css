@@ -32,6 +32,12 @@ a {
     color: black;
 }
 
+a:link,
+a:visited {
+    color: var(--main);
+    text-decoration: none;
+}
+
 ul {
     list-style: none;
     padding: 0px;
@@ -367,61 +373,6 @@ img {
 .close:hover,
 .close:focus {
     color: var(--main2);
-    text-decoration: none;
-}
-
-
-/* Movie Player */
-
-#output video {
-    width: 100%;
-}
-
-#progressBar {
-    height: 5px;
-    width: 0%;
-    background-color: #35b44f;
-    transition: width .4s ease-in-out;
-}
-
-body.is-seed .show-seed {
-    display: inline;
-}
-
-body.is-seed .show-leech {
-    display: none;
-}
-
-.show-seed {
-    display: none;
-}
-
-#status code {
-    font-size: 90%;
-    font-weight: 700;
-    margin-left: 3px;
-    margin-right: 3px;
-    border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
-}
-
-.is-seed #hero {
-    background-color: #154820;
-    transition: .5s .5s background-color ease-in-out;
-}
-
-#hero {
-    background-color: #2a3749;
-}
-
-#status {
-    color: var(--main-bg);
-    font-size: 17px;
-    padding: 5px;
-}
-
-a:link,
-a:visited {
-    color: var(--main);
     text-decoration: none;
 }
 
