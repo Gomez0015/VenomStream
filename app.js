@@ -34,7 +34,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(session({ secret: process.env.API_KEY }));
+app.use(session({ secret: "VenomStream292929928938082137023971390" }));
 
 app.use('/', siteRouter);
 app.use('/app', appindexRouter);

@@ -4,7 +4,7 @@ const Movies = require('./models/moviesModel.js');
 const Users = require('./models/userModel.js');
 const https = require('https');
 const axios = require('axios');
-const apiKey = process.env.API_KEY;
+const apiKey = "e46eabe7402731804b6d3bf9858dddcc";
 
 
 // TO UPDATE NAMES IF NEEDED
