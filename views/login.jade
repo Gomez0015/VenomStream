@@ -6,8 +6,8 @@ block content
     form(method='post' action='/app/login')
         .box
             h1 Dashboard
-            input.email(type='text' name='username' placeholder='Username' required autocomplete="on")
-            input.email(type='password' name='password' placeholder='Password' required autocomplete="on")
+            input.email(type='text' name='username' placeholder='Username' required autocomplete="on" minlength="6")
+            input.email(type='password' name='password' placeholder='Password' required autocomplete="on" minlength="6")
             button(type='submit' name='login').btn Sign In
             button(type='submit' name='signup')#btn2 Sign Up
 
