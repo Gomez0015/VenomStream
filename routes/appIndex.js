@@ -259,90 +259,189 @@ router.post('/addmovie', async function(req, res, next) {
             res.send({ info: "Show was not found", type: "error" });
         } else {
             var tvShowID = showData.id;
-
-            await axios({
-                    method: 'get',
-                    url: 'https://api.themoviedb.org/3/tv/' + tvShowID + '?api_key=' + apiKey + '&language=' + language,
-                })
-                .then((response) => {
-                    showData = response.data;
-                }, (error) => {
-                    console.log(error);
-                });
-            if (showData.seasons.length == 0) {
-                res.send({ info: "Show was not found", type: "error" });
-            }
-
-            TorrentSearchApi.disableAllProviders();
-            if (language == 'en') {
-                if (req.body.type == 'anime') {
-                    TorrentSearchApi.enableProvider('animetosho');
-                } else {
-                    TorrentSearchApi.enableProvider('1337x');
+            var notAnime = false;
+            if (req.body.type == 'anime') {
+                await axios({
+                        method: 'get',
+                        url: 'https://api.themoviedb.org/3/tv/' + tvShowID + '/keywords?api_key=' + apiKey,
+                    })
+                    .then((response) => {
+                        checkIfAnime = response.data.results;
+                    }, (error) => {
+                        console.log(error);
+                    });
+                for (var i = 0; i < checkIfAnime.length; i++) {
+                    if (checkIfAnime[i].name.includes("anime")) {
+                        notAnime = false;
+                        break;
+                    } else if (i == (checkIfAnime.length - 1)) {
+                        notAnime = true;
+                    }
                 }
+            }
+            if (notAnime) {
+                res.send({ info: "Anime was not found", type: "error" });
             } else {
-                TorrentSearchApi.enableProvider('Torrent9');
-            }
-            // Search (TV SHow Title + Season + Episode) in 'TV Show' category and limit to 1 results
-            var torrentsArray = [];
-            var showTitle = [];
-
-            if (showData.seasons[0].season_number <= 0) {
-                showData.seasons.shift();
-            }
-
-            showData.name = showData.name.replace("&", "and");
-
-            if (language == 'en') {
-                var temporaryShowData = JSON.parse(JSON.stringify(showData));
-                var torrents = [];
-                var seasonsMissing = [];
-
-                for (var i = 0; i < showData.seasons.length; i++) {
-                    if (temporaryShowData.seasons.length == 1) {
-                        break;
-                    }
-                    var season = ("S0" + (temporaryShowData.seasons[0].season_number) + "-S" + ((temporaryShowData.seasons.length < 11) ? "0" + (temporaryShowData.seasons[(temporaryShowData.seasons.length - 1)].season_number) : (temporaryShowData.seasons[(temporaryShowData.seasons.length - 1)].season_number)));
-                    torrents = await TorrentSearchApi.search(temporaryShowData.name + " " + season, 'TV', 1).catch((error) => { console.log(error) });
-                    if (torrents.length > 0) {
-                        break;
-                    } else {
-                        seasonsMissing.push(temporaryShowData.seasons[(temporaryShowData.seasons.length - 1)]);
-                        temporaryShowData.seasons.pop();
-                    }
+                await axios({
+                        method: 'get',
+                        url: 'https://api.themoviedb.org/3/tv/' + tvShowID + '?api_key=' + apiKey + '&language=' + language,
+                    })
+                    .then((response) => {
+                        showData = response.data;
+                    }, (error) => {
+                        console.log(error);
+                    });
+                if (showData.seasons.length == 0) {
+                    res.send({ info: "Show was not found", type: "error" });
                 }
 
-                seasonsMissing = seasonsMissing.reverse();
+                TorrentSearchApi.disableAllProviders();
+                if (language == 'en') {
+                    if (req.body.type == 'anime') {
+                        TorrentSearchApi.enableProvider('animetosho');
+                    } else {
+                        TorrentSearchApi.enableProvider('1337x');
+                    }
+                } else {
+                    TorrentSearchApi.enableProvider('Torrent9');
+                }
+                // Search (TV SHow Title + Season + Episode) in 'TV Show' category and limit to 1 results
+                var torrentsArray = [];
+                var showTitle = [];
 
-                if (torrents[0] != undefined) {
-                    showTitle.push(showData.name + " " + season);
-                    torrentsArray.push(torrents[0]);
-                    const showCheck = await Movies.find({ name: showTitle[0], language: language });
-                    if (showCheck[0] == undefined) {
-                        var magnet = await TorrentSearchApi.getMagnet(torrents[0]);
-                        await Movies.create({ name: showTitle[0], description: showData.overview, rating: showData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + showData.poster_path, magnet_link: magnet, popularity: showData.popularity, movieID: Math.random().toString(36).substr(2, 9), genres: [showData.genres[0].name] });
-                        if (seasonsMissing.length <= 0) {
-                            res.send({ info: "Tv Show or Anime Added", type: "success" });
+                if (showData.seasons[0].season_number <= 0) {
+                    showData.seasons.shift();
+                }
+
+                showData.name = showData.name.replace("&", "and");
+
+                if (language == 'en') {
+                    var temporaryShowData = JSON.parse(JSON.stringify(showData));
+                    var torrents = [];
+                    var seasonsMissing = [];
+
+                    for (var i = 0; i < showData.seasons.length; i++) {
+                        if (temporaryShowData.seasons.length == 1) {
+                            break;
+                        }
+                        var season = ("S0" + (temporaryShowData.seasons[0].season_number) + "-S" + ((temporaryShowData.seasons.length < 11) ? "0" + (temporaryShowData.seasons[(temporaryShowData.seasons.length - 1)].season_number) : (temporaryShowData.seasons[(temporaryShowData.seasons.length - 1)].season_number)));
+                        torrents = await TorrentSearchApi.search(temporaryShowData.name + " " + season, 'TV', 1).catch((error) => { console.log(error) });
+                        if (torrents.length > 0) {
+                            break;
+                        } else {
+                            seasonsMissing.push(temporaryShowData.seasons[(temporaryShowData.seasons.length - 1)]);
+                            temporaryShowData.seasons.pop();
+                        }
+                    }
+
+                    seasonsMissing = seasonsMissing.reverse();
+
+                    if (torrents[0] != undefined) {
+                        showTitle.push(showData.name + " " + season);
+                        torrentsArray.push(torrents[0]);
+                        const showCheck = await Movies.find({ name: showTitle[0], language: language });
+                        if (showCheck[0] == undefined) {
+                            var magnet = await TorrentSearchApi.getMagnet(torrents[0]);
+                            await Movies.create({ name: showTitle[0], description: showData.overview, rating: showData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + showData.poster_path, magnet_link: magnet, popularity: showData.popularity, movieID: Math.random().toString(36).substr(2, 9), genres: [showData.genres[0].name] });
+                            if (seasonsMissing.length <= 0) {
+                                res.send({ info: "Tv Show or Anime Added", type: "success" });
+                            }
+                        } else {
+                            res.send({ info: "This is a duplicate.", type: "error" });
+                        }
+                        if (seasonsMissing.length > 0) {
+                            var currentSearchIndex = 0;
+                            for (var i = 0; i < seasonsMissing.length; i++) {
+                                var season;
+                                if (seasonsMissing[i].season_number < 10) {
+                                    season = ("S0" + (seasonsMissing[i].season_number));
+                                } else {
+                                    season = ("S" + (seasonsMissing[i].season_number));
+                                }
+                                var torrents = await TorrentSearchApi.search(showData.name + " " + season, 'TV', (currentSearchIndex + 1)).catch((error) => { console.log(error) });
+                                if (torrents[currentSearchIndex] != undefined) {
+                                    var torrentTitle = torrents[currentSearchIndex].title;
+                                    var torrentEpCheck = torrentTitle.substr(torrentTitle.indexOf(season), 6).substr(4).match(/(\d+)/);
+                                    if (currentSearchIndex >= 10) {
+                                        currentSearchIndex = 0;
+                                    } else if (torrentEpCheck != null) {
+                                        if (100 > torrentEpCheck[0] > 0) {
+                                            i = i - 1;
+                                            currentSearchIndex = currentSearchIndex + 1;
+                                        }
+                                    } else {
+                                        showTitle.push(title + " " + season);
+                                        torrentsArray.push(torrents[0]);
+                                        currentSearchIndex = 0;
+                                    }
+                                }
+                            }
+
+                            for (var i = 0; i < torrentsArray.length; i++) {
+                                const showCheck = await Movies.find({ name: showTitle[i], language: language });
+                                if (showCheck[0] == undefined) {
+                                    var magnet = await TorrentSearchApi.getMagnet(torrentsArray[i]);
+                                    await Movies.create({ name: showTitle[i], description: showData.overview, rating: showData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + showData.poster_path, magnet_link: magnet, popularity: showData.popularity, movieID: Math.random().toString(36).substr(2, 9), genres: [showData.genres[0].name] });
+                                }
+                            }
+                            if (torrentsArray.length > 0) {
+                                res.send({ info: "Tv Show or Anime Added", type: "success" });
+                            } else {
+                                res.send({ info: "No torrents for this Show or Anime found", type: "error" });
+                            }
                         }
                     } else {
-                        res.send({ info: "This is a duplicate.", type: "error" });
-                    }
-                    if (seasonsMissing.length > 0) {
-                        for (var i = 0; i < seasonsMissing.length; i++) {
+                        var currentSearchIndex = 0;
+                        for (var i = 0; i < showData.seasons.length; i++) {
                             var season;
-                            if (seasonsMissing[i].season_number < 10) {
-                                season = ("S0" + (seasonsMissing[i].season_number));
+                            if (showData.seasons[i].season_number < 10) {
+                                season = ("S0" + (showData.seasons[i].season_number));
                             } else {
-                                season = ("S" + (seasonsMissing[i].season_number));
+                                season = ("S" + (showData.seasons[i].season_number));
                             }
-                            var torrents = await TorrentSearchApi.search(showData.name + " " + season, 'TV', 1).catch((error) => { console.log(error) });
-
-                            if (torrents[0] != undefined) {
-                                showTitle.push(title + " " + season);
-                                torrentsArray.push(torrents[0]);
+                            var torrents = await TorrentSearchApi.search(showData.name + " " + season, 'TV', (currentSearchIndex + 1)).catch((error) => { console.log(error) });
+                            if (torrents[currentSearchIndex] != undefined) {
+                                var torrentTitle = torrents[currentSearchIndex].title;
+                                var torrentEpCheck = torrentTitle.substr(torrentTitle.indexOf(season), 6).substr(4).match(/(\d+)/);
+                                if (currentSearchIndex >= 10) {
+                                    currentSearchIndex = 0;
+                                } else if (torrentEpCheck != null) {
+                                    if (100 > torrentEpCheck[0] > 0) {
+                                        i = i - 1;
+                                        currentSearchIndex = currentSearchIndex + 1;
+                                    }
+                                } else {
+                                    showTitle.push(title + " " + season);
+                                    torrentsArray.push(torrents[currentSearchIndex]);
+                                }
                             }
                         }
+                        for (var i = 0; i < torrentsArray.length; i++) {
+                            const showCheck = await Movies.find({ name: showTitle[i], language: language });
+                            if (showCheck[0] == undefined) {
+                                var magnet = await TorrentSearchApi.getMagnet(torrentsArray[i]);
+                                await Movies.create({ name: showTitle[i], description: showData.overview, rating: showData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + showData.poster_path, magnet_link: magnet, popularity: showData.popularity, movieID: Math.random().toString(36).substr(2, 9), genres: [showData.genres[0].name] });
+                            }
+                        }
+                        if (torrentsArray.length > 0) {
+                            res.send({ info: "Tv Show or Anime Added", type: "success" });
+                        } else {
+                            res.send({ info: "No torrents for this Show or Anime found", type: "error" });
+                        }
+                    }
 
+                } else {
+
+                    for (var i = 0; i < showData.seasons.length; i++) {
+                        var season = ("Saison " + (showData.seasons[i].season_number));
+                        var torrents = await TorrentSearchApi.search(showData.name + " " + season, 'TV', 1).catch((error) => { console.log(error) });
+
+                        if (torrents[0] != undefined) {
+                            showTitle.push(title + " " + season);
+                            torrentsArray.push(torrents[0]);
+                        }
+                    }
+                    if (torrentsArray.length != 0) {
                         for (var i = 0; i < torrentsArray.length; i++) {
                             const showCheck = await Movies.find({ name: showTitle[i], language: language });
                             if (showCheck[0] == undefined) {
@@ -351,54 +450,9 @@ router.post('/addmovie', async function(req, res, next) {
                             }
                         }
                         res.send({ info: "Tv Show or Anime Added", type: "success" });
+                    } else {
+                        res.send({ info: "Show Torrent not found", type: "error" });
                     }
-                } else {
-                    for (var i = 0; i < showData.seasons.length; i++) {
-                        var season;
-                        if (showData.seasons[i].season_number < 10) {
-                            season = ("S0" + (showData.seasons[i].season_number));
-                        } else {
-                            season = ("S" + (showData.seasons[i].season_number));
-                        }
-                        var torrents = await TorrentSearchApi.search(showData.name + " " + season, 'TV', 1).catch((error) => { console.log(error) });
-
-                        if (torrents[0] != undefined) {
-                            showTitle.push(title + " " + season);
-                            torrentsArray.push(torrents[0]);
-                        }
-                    }
-                    for (var i = 0; i < torrentsArray.length; i++) {
-                        const showCheck = await Movies.find({ name: showTitle[i], language: language });
-                        if (showCheck[0] == undefined) {
-                            var magnet = await TorrentSearchApi.getMagnet(torrentsArray[i]);
-                            await Movies.create({ name: showTitle[i], description: showData.overview, rating: showData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + showData.poster_path, magnet_link: magnet, popularity: showData.popularity, movieID: Math.random().toString(36).substr(2, 9), genres: [showData.genres[0].name] });
-                        }
-                    }
-                    res.send({ info: "Tv Show or Anime Added", type: "success" });
-                }
-
-            } else {
-
-                for (var i = 0; i < showData.seasons.length; i++) {
-                    var season = ("Saison " + (showData.seasons[i].season_number));
-                    var torrents = await TorrentSearchApi.search(showData.name + " " + season, 'TV', 1).catch((error) => { console.log(error) });
-
-                    if (torrents[0] != undefined) {
-                        showTitle.push(title + " " + season);
-                        torrentsArray.push(torrents[0]);
-                    }
-                }
-                if (torrentsArray.length != 0) {
-                    for (var i = 0; i < torrentsArray.length; i++) {
-                        const showCheck = await Movies.find({ name: showTitle[i], language: language });
-                        if (showCheck[0] == undefined) {
-                            var magnet = await TorrentSearchApi.getMagnet(torrentsArray[i]);
-                            await Movies.create({ name: showTitle[i], description: showData.overview, rating: showData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + showData.poster_path, magnet_link: magnet, popularity: showData.popularity, movieID: Math.random().toString(36).substr(2, 9), genres: [showData.genres[0].name] });
-                        }
-                    }
-                    res.send({ info: "Tv Show or Anime Added", type: "success" });
-                } else {
-                    res.send({ info: "Show Torrent not found", type: "error" });
                 }
             }
         }
