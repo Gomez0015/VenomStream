@@ -34,7 +34,7 @@ async function getMoviesToShow(pageObject, movies, query) {
         var endCategories = [];
         arrayOfCategories.forEach(function(key) {
             moviesArray = moviesArray.filter(function(movie) {
-                if (Math.floor(movie.rating) == key) {
+                if (Math.floor(movie.rating) == key && result.includes(movie) == false) {
                     movie.genres[0] = Math.floor(movie.rating);
                     endCategories.includes(key) ? null : endCategories.push(key);
                     result.push(movie);
@@ -84,7 +84,7 @@ async function getMoviesToShow(pageObject, movies, query) {
         var result = [];
         arrayOfCategories.forEach(function(key) {
             moviesArray = moviesArray.filter(function(movie) {
-                if (movie.genres[0] == key) {
+                if (movie.genres[0] == key && result.some(a => a.name === movie.name) == false) {
                     result.push(movie);
                     return false;
                 } else
