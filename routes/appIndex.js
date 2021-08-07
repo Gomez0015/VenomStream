@@ -34,7 +34,7 @@ async function getMoviesToShow(pageObject, movies, query) {
         var endCategories = [];
         arrayOfCategories.forEach(function(key) {
             moviesArray = moviesArray.filter(function(movie) {
-                if (Math.floor(movie.rating) == key && result.includes(movie) == false) {
+                if (Math.floor(movie.rating) == key) {
                     movie.genres[0] = Math.floor(movie.rating);
                     endCategories.includes(key) ? null : endCategories.push(key);
                     result.push(movie);
@@ -43,7 +43,11 @@ async function getMoviesToShow(pageObject, movies, query) {
                     return true;
             })
         });
-        moviesArray = (result);
+        moviesArray = result.filter((result, index, self) =>
+            index === self.findIndex((t) => (
+                t.name === result.name
+            ))
+        );
         arrayOfCategories = endCategories;
 
         var newArr = [];
@@ -84,14 +88,18 @@ async function getMoviesToShow(pageObject, movies, query) {
         var result = [];
         arrayOfCategories.forEach(function(key) {
             moviesArray = moviesArray.filter(function(movie) {
-                if (movie.genres[0] == key && result.some(a => a.name === movie.name) == false) {
+                if (movie.genres[0] == key) {
                     result.push(movie);
                     return false;
                 } else
                     return true;
             })
         });
-        moviesArray = (result);
+        moviesArray = result.filter((result, index, self) =>
+            index === self.findIndex((t) => (
+                t.name === result.name
+            ))
+        );
 
         var newArr = [];
         moviesArray.sort(function(a, b) {
@@ -495,6 +503,12 @@ router.get('/search', async function(req, res, next) {
     // }
 
     // moviesObject.moviesArray = mySort(moviesObject.moviesArray, searchQuery);
+
+    movies = movies.filter((movies, index, self) =>
+        index === self.findIndex((t) => (
+            t.name === movies.name
+        ))
+    );
 
     if (sess.username != null) {
         res.render('index', { title: 'VenomStream', moviesArray: movies, searchLink: true, username: sess.username, favorites: sess.favorites, currentPage: pageObject.currentPage, themeColor: req.session.themeColor });
