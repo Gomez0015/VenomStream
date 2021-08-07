@@ -21,6 +21,11 @@ var frenchMoviesFiltered;
 async function getDatabaseShit() {
     console.log("Fetching Database...");
     allMovies = await Movies.find();
+    allMovies = allMovies.filter((allMovies, index, self) =>
+        index === self.findIndex((t) => (
+            t.name === allMovies.name && t.language === allMovies.language
+        ))
+    );
     homeMovies = allMovies;
     rankedByRating = allMovies.sort((a, b) => (a.rating < b.rating) ? 1 : ((b.rating < a.rating) ? -1 : 0));
     englishMoviesFiltered = await allMovies.filter(function(a) { return a.language == 'en' });
@@ -70,11 +75,7 @@ async function getMoviesToShow(pageObject, movies, query) {
                 return true;
         })
     });
-    moviesArray = result.filter((result, index, self) =>
-        index === self.findIndex((t) => (
-            t.name === result.name && t.language === result.language
-        ))
-    );
+    moviesArray = result;
 
     var newArr = [];
     moviesArray.sort(function(a, b) {
@@ -483,12 +484,6 @@ router.get('/search', async function(req, res, next) {
     movies = mySort(movies, searchQuery);
 
     var pageObject = getCurrentPage(req);
-
-    movies = movies.filter((movies, index, self) =>
-        index === self.findIndex((t) => (
-            t.name === movies.name && t.language === movies.language
-        ))
-    );
 
     var startIndex = ((pageObject.currentPage - 1) * 100);
     if (startIndex >= movies.length - 1) {
