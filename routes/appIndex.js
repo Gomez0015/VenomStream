@@ -483,19 +483,20 @@ router.get('/search', async function(req, res, next) {
     movies = mySort(movies, searchQuery);
 
     var pageObject = getCurrentPage(req);
-    // var moviesObject = await getMoviesToShow(pageObject, movies);
-    // if (moviesObject.moviesArray[0] == undefined) {
-    //     pageObject.currentPage -= 1;
-    //     moviesObject = await getMoviesToShow(pageObject, moviesArray.reverse());
-    // }
-
-    // moviesObject.moviesArray = mySort(moviesObject.moviesArray, searchQuery);
 
     movies = movies.filter((movies, index, self) =>
         index === self.findIndex((t) => (
             t.name === movies.name && t.language === movies.language
         ))
     );
+
+    var startIndex = ((pageObject.currentPage - 1) * 100);
+    if (startIndex >= movies.length - 1) {
+        movies = movies.splice((startIndex - 100), 100);
+        pageObject.currentPage -= 1;
+    } else {
+        movies = movies.splice(startIndex, 100);
+    }
 
     if (sess.username != null) {
         res.render('index', { title: 'VenomStream', moviesArray: movies, searchLink: true, username: sess.username, favorites: sess.favorites, currentPage: pageObject.currentPage, themeColor: req.session.themeColor });
