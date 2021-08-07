@@ -12,6 +12,23 @@ const apiKey = "e46eabe7402731804b6d3bf9858dddcc";
 
 // Torrent Shit Hacker go BRRRRR
 const TorrentSearchApi = require('./customModules/torrent-search-api');
+const { compareSync } = require('bcrypt');
+
+var rankedByRating;
+var homeMovies;
+var englishMoviesFiltered;
+var frenchMoviesFiltered;
+async function getDatabaseShit() {
+    console.log("Fetching Database...");
+    allMovies = await Movies.find();
+    homeMovies = allMovies;
+    rankedByRating = allMovies.sort((a, b) => (a.rating < b.rating) ? 1 : ((b.rating < a.rating) ? -1 : 0));
+    englishMoviesFiltered = await allMovies.filter(function(a) { return a.language == 'en' });
+    frenchMoviesFiltered = await allMovies.filter(function(a) { return a.language == 'fr' });
+    console.log("Done...");
+}
+
+getDatabaseShit();
 
 async function getMoviesToShow(pageObject, movies, query) {
     var moviesArray = movies;
@@ -25,97 +42,55 @@ async function getMoviesToShow(pageObject, movies, query) {
         }
         return -1;
     }
-    if (query == "rating") {
-        var categories = ["10", "9", "8", "7", "6", "5", "4", "3", "2", "1"];
 
-        arrayOfCategories = categories;
-
-        var result = [];
-        var endCategories = [];
-        arrayOfCategories.forEach(function(key) {
-            moviesArray = moviesArray.filter(function(movie) {
-                if (Math.floor(movie.rating) == key) {
-                    movie.genres[0] = Math.floor(movie.rating);
-                    endCategories.includes(key) ? null : endCategories.push(key);
-                    result.push(movie);
-                    return false;
-                } else
-                    return true;
-            })
-        });
-        moviesArray = result.filter((result, index, self) =>
-            index === self.findIndex((t) => (
-                t.name === result.name
-            ))
-        );
-        arrayOfCategories = endCategories;
-
-        var newArr = [];
-        moviesArray.sort(function(a, b) {
-            return a.rating - b.rating;
-        });
-
-        // put the biggest in new array
-        newArr.push(moviesArray.pop());
-
-        // keep grabbing the biggest remaining item and alternate
-        // between pushing and unshifting onto the new array
-        while (moviesArray.length) {
-            newArr[moviesArray.length % 2 === 0 ? 'push' : 'unshift'](moviesArray.pop());
+    var categories = [];
+    for (var i = 0; i < moviesArray.length; i++) {
+        if (findWithAttr(categories, 'category', moviesArray[i].genres[0]) == -1) {
+            categories.push({ category: moviesArray[i].genres[0], popularity: moviesArray[i].popularity });
+        } else {
+            var id = findWithAttr(categories, 'category', moviesArray[i].genres[0]);
+            categories[id].popularity = categories[id].popularity + moviesArray[i].popularity;
         }
-
-        moviesArray = newArr;
-
-    } else {
-
-        var categories = [];
-        for (var i = 0; i < moviesArray.length; i++) {
-            if (findWithAttr(categories, 'category', moviesArray[i].genres[0]) == -1) {
-                categories.push({ category: moviesArray[i].genres[0], popularity: moviesArray[i].popularity });
-            } else {
-                var id = findWithAttr(categories, 'category', moviesArray[i].genres[0]);
-                categories[id].popularity = categories[id].popularity + moviesArray[i].popularity;
-            }
-        }
-
-        categories = categories.sort((a, b) => (a.popularity < b.popularity) ? 1 : -1);
-
-        for (var i = ((pageObject.currentPage - 1) * 8); i < (((pageObject.currentPage - 1) * 8) + 8); i++) {
-            if (categories[i] !== undefined) {
-                arrayOfCategories.push(categories[i].category);
-            }
-        }
-        var result = [];
-        arrayOfCategories.forEach(function(key) {
-            moviesArray = moviesArray.filter(function(movie) {
-                if (movie.genres[0] == key) {
-                    result.push(movie);
-                    return false;
-                } else
-                    return true;
-            })
-        });
-        moviesArray = result.filter((result, index, self) =>
-            index === self.findIndex((t) => (
-                t.name === result.name
-            ))
-        );
-
-        var newArr = [];
-        moviesArray.sort(function(a, b) {
-            return a.popularity - b.popularity;
-        });
-
-        // put the biggest in new array
-        newArr.push(moviesArray.pop());
-
-        // keep grabbing the biggest remaining item and alternate
-        // between pushing and unshifting onto the new array
-        while (moviesArray.length) {
-            newArr[moviesArray.length % 2 === 0 ? 'push' : 'unshift'](moviesArray.pop());
-        }
-        moviesArray = newArr;
     }
+
+    categories = categories.sort((a, b) => (a.popularity < b.popularity) ? 1 : -1);
+
+    for (var i = ((pageObject.currentPage - 1) * 8); i < (((pageObject.currentPage - 1) * 8) + 8); i++) {
+        if (categories[i] !== undefined) {
+            arrayOfCategories.push(categories[i].category);
+        }
+    }
+    var result = [];
+    arrayOfCategories.forEach(function(key) {
+        moviesArray = moviesArray.filter(function(movie) {
+            if (movie.genres[0] == key) {
+                result.push(movie);
+                return false;
+            } else
+                return true;
+        })
+    });
+    moviesArray = result.filter((result, index, self) =>
+        index === self.findIndex((t) => (
+            t.name === result.name && t.language === result.language
+        ))
+    );
+
+    var newArr = [];
+    moviesArray.sort(function(a, b) {
+        return a.popularity - b.popularity;
+    });
+
+    // put the biggest in new array
+    newArr.push(moviesArray.pop());
+
+    // keep grabbing the biggest remaining item and alternate
+    // between pushing and unshifting onto the new array
+    while (moviesArray.length) {
+        newArr[moviesArray.length % 2 === 0 ? 'push' : 'unshift'](moviesArray.pop());
+    }
+    moviesArray = newArr;
+
     return { moviesArray: moviesArray.reverse(), categories: arrayOfCategories };
 }
 
@@ -123,7 +98,7 @@ async function getMoviesToShow(pageObject, movies, query) {
 router.get('/', async function(req, res, next) {
     var sess = req.session;
     var pageObject = getCurrentPage(req);
-    var moviesArray = await Movies.find();
+    var moviesArray = homeMovies.slice(0);
     var moviesObject = await getMoviesToShow(pageObject, moviesArray.reverse());
 
     if (moviesObject.moviesArray[0] == undefined) {
@@ -222,6 +197,8 @@ router.post('/addmovie', async function(req, res, next) {
                         } else if (torrents[0] != undefined) {
                             var magnet = await TorrentSearchApi.getMagnet(torrents[0]);
                             await Movies.create({ name: movieTitle, description: movieData.overview, rating: movieData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + movieData.poster_path, magnet_link: magnet, popularity: movieData.popularity, full_torrent: torrents[0], movieID: Math.random().toString(36).substr(2, 9), genres: [movieDataExtended.genres[0].name] });
+                            console.log("Updating Database...");
+                            getDatabaseShit();
                             res.send({ info: "Movie Added", type: "success" });
                         } else {
                             timeSinceStart += 500;
@@ -241,6 +218,8 @@ router.post('/addmovie', async function(req, res, next) {
                         } else if (torrents[0] != undefined) {
                             var magnet = await TorrentSearchApi.getMagnet(torrents[0]);
                             await Movies.create({ name: movieTitle, description: movieData.overview, rating: movieData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + movieData.poster_path, magnet_link: magnet, popularity: movieData.popularity, full_torrent: torrents[0], movieID: Math.random().toString(36).substr(2, 9), genres: [movieDataExtended.genres[0].name] });
+                            console.log("Updating Database...");
+                            getDatabaseShit();
                             res.send({ info: "Movie Added", type: "success" });
                         } else {
                             timeSinceStart += 500;
@@ -352,6 +331,8 @@ router.post('/addmovie', async function(req, res, next) {
                             var magnet = await TorrentSearchApi.getMagnet(torrents[0]);
                             await Movies.create({ name: showTitle[0], description: showData.overview, rating: showData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + showData.poster_path, magnet_link: magnet, popularity: showData.popularity, movieID: Math.random().toString(36).substr(2, 9), genres: [showData.genres[0].name] });
                             if (seasonsMissing.length <= 0) {
+                                console.log("Updating Database...");
+                                getDatabaseShit();
                                 res.send({ info: "Tv Show or Anime Added", type: "success" });
                             }
                         } else {
@@ -393,6 +374,8 @@ router.post('/addmovie', async function(req, res, next) {
                                 }
                             }
                             if (torrentsArray.length > 0) {
+                                console.log("Updating Database...");
+                                getDatabaseShit();
                                 res.send({ info: "Tv Show or Anime Added", type: "success" });
                             } else {
                                 res.send({ info: "No torrents for this Show or Anime found", type: "error" });
@@ -432,6 +415,8 @@ router.post('/addmovie', async function(req, res, next) {
                             }
                         }
                         if (torrentsArray.length > 0) {
+                            console.log("Updating Database...");
+                            getDatabaseShit();
                             res.send({ info: "Tv Show or Anime Added", type: "success" });
                         } else {
                             res.send({ info: "No torrents for this Show or Anime found", type: "error" });
@@ -457,6 +442,8 @@ router.post('/addmovie', async function(req, res, next) {
                                 await Movies.create({ name: showTitle[i], description: showData.overview, rating: showData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + showData.poster_path, magnet_link: magnet, popularity: showData.popularity, movieID: Math.random().toString(36).substr(2, 9), genres: [showData.genres[0].name] });
                             }
                         }
+                        console.log("Updating Database...");
+                        getDatabaseShit();
                         res.send({ info: "Tv Show or Anime Added", type: "success" });
                     } else {
                         res.send({ info: "Show Torrent not found", type: "error" });
@@ -474,7 +461,7 @@ router.get('/search', async function(req, res, next) {
 
     var searchQuery = req.query.searchInput.toLowerCase();
 
-    var movies = await Movies.find();
+    var movies = homeMovies;
 
     function mySort(arrKeys, searchkey) {
         var matchedKeys = [],
@@ -506,7 +493,7 @@ router.get('/search', async function(req, res, next) {
 
     movies = movies.filter((movies, index, self) =>
         index === self.findIndex((t) => (
-            t.name === movies.name
+            t.name === movies.name && t.language === movies.language
         ))
     );
 
@@ -545,7 +532,7 @@ router.post('/addfavorite', async function(req, res, next) {
 router.get('/listFavorites', async function(req, res, next) {
     req.session.themeColor = req.session.themeColor == undefined ? "greenColors" : req.session.themeColor;
     var sess = req.session;
-    var moviesArray = await Movies.find();
+    var moviesArray = homeMovies;
     var favoritesArray = [];
     for (let i = 0; i < moviesArray.length; i++) {
         if (sess.favorites.includes(moviesArray[i].movieID)) {
@@ -565,29 +552,31 @@ router.get('/listRatings', async function(req, res, next) {
     req.session.themeColor = req.session.themeColor == undefined ? "greenColors" : req.session.themeColor;
 
     var sess = req.session;
-    var moviesArray = await Movies.find();
     var pageObject = getCurrentPage(req);
-    var moviesObject = await getMoviesToShow(pageObject, moviesArray, "rating");
-    if (moviesObject.moviesArray[0] == undefined) {
+    var startIndex = ((pageObject.currentPage - 1) * 100);
+    var movies = rankedByRating.slice(0);
+    if (startIndex >= movies.length - 1) {
+        movies = movies.splice((startIndex - 100), 100);
         pageObject.currentPage -= 1;
-        moviesObject = await getMoviesToShow(pageObject, moviesArray.reverse());
+    } else {
+        movies = movies.splice(startIndex, 100);
     }
-    res.render('index', { title: 'VenomStream', moviesArray: moviesObject.moviesArray.reverse(), categories: moviesObject.categories, username: sess.username, favorites: sess.favorites, currentPage: pageObject.currentPage, themeColor: req.session.themeColor });
+
+    res.render('index', { title: 'VenomStream', moviesArray: movies, searchLink: true, username: sess.username, favorites: sess.favorites, currentPage: pageObject.currentPage, themeColor: req.session.themeColor });
 });
 
 router.get('/listByLanguage', async function(req, res, next) {
     req.session.themeColor = req.session.themeColor == undefined ? "greenColors" : req.session.themeColor;
     var sess = req.session;
-    const moviesArray = await Movies.find();
     switch (req.query.language) {
         case 'English':
-            var filteredMovies = await moviesArray.filter(function(a) { return a.language == 'en' });
+            var filteredMovies = englishMoviesFiltered;
             filteredMovies = filteredMovies.reverse();
             var pageObject = getCurrentPage(req);
             var moviesObject = await getMoviesToShow(pageObject, filteredMovies);
             if (moviesObject.moviesArray[0] == undefined) {
                 pageObject.currentPage -= 1;
-                moviesObject = await getMoviesToShow(pageObject, moviesArray.reverse());
+                moviesObject = await getMoviesToShow(pageObject, filteredMovies);
             }
             if (sess.username != null) {
                 res.render('index', { title: 'VenomStream', moviesArray: moviesObject.moviesArray, categories: moviesObject.categories, username: sess.username, favorites: sess.favorites, currentPage: pageObject.currentPage, themeColor: req.session.themeColor });
@@ -596,14 +585,14 @@ router.get('/listByLanguage', async function(req, res, next) {
             }
             break;
         case 'French':
-            var filteredMovies = moviesArray.filter(function(a) { return a.language == 'fr'; });
+            var filteredMovies = frenchMoviesFiltered;
             filteredMovies.sort((a, b) => (a.popularity > b.popularity) ? 1 : -1);
             filteredMovies = filteredMovies.reverse();
             var pageObject = getCurrentPage(req);
             var moviesObject = await getMoviesToShow(pageObject, filteredMovies);
             if (moviesObject.moviesArray[0] == undefined) {
                 pageObject.currentPage -= 1;
-                moviesObject = await getMoviesToShow(pageObject, moviesArray.reverse());
+                moviesObject = await getMoviesToShow(pageObject, filteredMovies);
             }
             if (sess.username != null) {
                 res.render('index', { title: 'VenomStream', moviesArray: moviesObject.moviesArray, categories: moviesObject.categories, username: sess.username, favorites: sess.favorites, currentPage: pageObject.currentPage, themeColor: req.session.themeColor });
