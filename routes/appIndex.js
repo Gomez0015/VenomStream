@@ -209,19 +209,29 @@ router.post('/addmovie', async function(req, res, next) {
                 }());
             } else {
                 TorrentSearchApi.enableProvider('ThePirateBay');
-                const torrents = await TorrentSearchApi.search(movieTitle + " " + movieData.release_date.substring(0, 4) + " 1080p", 'Video', 1);
-
+                const torrents = await TorrentSearchApi.search(movieTitle.replace("'", "").replace("#", "").replace(";", "").replace(":", "") + " " + movieData.release_date.substring(0, 4) + " 1080p", 'Video', 5);
                 var timeSinceStart = 0;
+                var currentTorrentCount = 0;
                 (function loop() {
                     setTimeout(async function() {
+                        console.log(torrents[currentTorrentCount]);
                         if (timeSinceStart >= 20000) {
                             res.send({ info: "Timed Out after 20 Seconds", type: 'error' });
-                        } else if (torrents[0] != undefined) {
-                            var magnet = await TorrentSearchApi.getMagnet(torrents[0]);
-                            await Movies.create({ name: movieTitle, description: movieData.overview, rating: movieData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + movieData.poster_path, magnet_link: magnet, popularity: movieData.popularity, full_torrent: torrents[0], movieID: Math.random().toString(36).substr(2, 9), genres: [movieDataExtended.genres[0].name] });
-                            console.log("Updating Database...");
-                            getDatabaseShit();
-                            res.send({ info: "Movie Added", type: "success" });
+                        } else if (currentTorrentCount >= torrents.length) {
+                            res.send({ info: "Could not find Torrent for this Movie", type: 'error' });
+                        } else if (torrents[currentTorrentCount] != undefined) {
+                            console.log(torrents[currentTorrentCount].title);
+                            if (torrents[currentTorrentCount].title != "No results returned") {
+                                var magnet = await TorrentSearchApi.getMagnet(torrents[currentTorrentCount]);
+                                await Movies.create({ name: movieTitle, description: movieData.overview, rating: movieData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + movieData.poster_path, magnet_link: magnet, popularity: movieData.popularity, full_torrent: torrents[currentTorrentCount], movieID: Math.random().toString(36).substr(2, 9), genres: [movieDataExtended.genres[0].name] });
+                                console.log("Updating Database...");
+                                getDatabaseShit();
+                                res.send({ info: "Movie Added", type: "success" });
+                            } else {
+                                currentTorrentCount += 1;
+                                timeSinceStart += 500;
+                                loop()
+                            }
                         } else {
                             timeSinceStart += 500;
                             loop()
