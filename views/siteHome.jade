@@ -23,101 +23,106 @@ html(lang='en')
       gtag('js', new Date());
       gtag('config', 'G-B0KEZZM1F1');
   body
-    // hero header
-    section#home.py-7.py-md-0.bg-hero
-      .container
-        .row.vh-md-100
-          .col-md-8.col-sm-10.col-12.mx-auto.my-auto.text-center
-            h1.heading-black.text-capitalize VenomStream
-            p.lead.py-3
-              | Watch Anything, Anytime.
+    section.content-mobile
+      h1 VenomStream
+      p Currently only available on
+        | Mac & Windows
+    section.content-desktop
+      // hero header
+      section#home.py-7.py-md-0.bg-hero
+        .container
+          .row.vh-md-100
+            .col-md-8.col-sm-10.col-12.mx-auto.my-auto.text-center
+              h1.heading-black.text-capitalize VenomStream
+              p.lead.py-3
+                | Watch Anything, Anytime.
+                br
+                | (No bullshit, No popups)
+              //- href="/packages/VenomStreamPackage.zip"
+              //- a.btn.btn-primary.d-inline-flex.flex-row.align-items-center(style="color: black;")
+              //-   | Download Now
+              //-   em.ml-2(data-feather='download')
+              a.btn.btn-primary.d-inline-flex.flex-row.align-items-center(style="color: black;" href="/app")
+                | Web Version
+                em.ml-2(data-feather='chrome')
               br
-              | (No bullshit, No popups)
-            //- href="/packages/VenomStreamPackage.zip"
-            //- a.btn.btn-primary.d-inline-flex.flex-row.align-items-center(style="color: black;")
-            //-   | Download Now
-            //-   em.ml-2(data-feather='download')
-            a.btn.btn-primary.d-inline-flex.flex-row.align-items-center(style="color: black;" href="/app")
-              | Web Version
-              em.ml-2(data-feather='chrome')
-            br
-            a.btn.btn-primary.d-inline-flex.flex-row.align-items-center(style="color: black; margin-top: 15px;" href="https://www.sodaplayer.com/" target="_blank")
-              | Soda Player Install
-              em.ml-2(data-feather='download')
-            p(style="margin: 0;")
-              | (required for watching streams)
-            p(style="margin: 0;")
-              | (Currently only for Mac & Windows)
-    // features section
-    section#features.pt-6.pb-7
-      .container
-        .row
-          .col-md-6.mx-auto.text-center
-            h2.heading-black VenomStream offers everything you need.
-            p.text-muted.lead
-              | One Streaming Service,
-              | no ads, every movie and show, no payments.
-        .row.mt-5
-          .col-md-10.mx-auto
-            .row.feature-boxes
-              .col-md-12.box
-                .icon-box.box-success
-                  .icon-box-inner
-                    span(data-feather='monitor' width='35' height='35')
-                h5 Unlimited devices
-                p.text-muted
-                  | Works on any computer device all for free
-              .col-md-6.box
-                .icon-box.box-danger
-                  .icon-box-inner
-                    span(data-feather='layout' width='35' height='35')
-                h5 Easy to use
-                p.text-muted
-                  | Only takes a couple of clicks to get working.
-              .col-md-6.box
-                .icon-box.box-info
-                  .icon-box-inner
-                    span(data-feather='globe' width='35' height='35')
-                h5 Available globally
-                p.text-muted
-                  | Movies and Shows in French and English with subtitles
-    // faq section
-    section#faq.py-7
-      .container
-        .row
-          .col-md-6.mx-auto.text-center
-            h2 Frequently asked questions
-            p.text-muted.lead Answers to most common questions.
-        .row.mt-5
-          .col-md-10.mx-auto
-            .row
-              .col-md-6.mb-5
-                h6 Can I try it for free?
-                p.text-muted
-                  | Yes and forever.
-              .col-md-6.mb-5
-                h6 Do you have hidden fees?
-                p.text-muted
-                  | No hidden fees.
-              .col-md-6.mb-5
-                h6 What are the payment methods you accept?
-                p.text-muted
-                  | If you want to donate you can using Paypal and Credit Card.
-              .col-md-6.mb-5
-                h6 How often do you release updates?
-                p.text-muted
-                  | Every Week!
-              .col-md-6.mb-5
-                h6 What is your refund policy?
-                p.text-muted
-                  | No refunds. Dont have time for that shit.
-              .col-md-6.mb-5
-                h6 How can I contact you?
-                p.text-muted
-                  | email me at ceo@venomstream.com
-    // scroll to top
-    .scroll-top
-      i.fa.fa-angle-up(aria-hidden='true')
+              a.btn.btn-primary.d-inline-flex.flex-row.align-items-center(style="color: black; margin-top: 15px;" href="https://www.sodaplayer.com/" target="_blank")
+                | Soda Player Install
+                em.ml-2(data-feather='download')
+              p(style="margin: 0;")
+                | (required for watching streams)
+              p(style="margin: 0;")
+                | (Currently only for Mac & Windows)
+      // features section
+      section#features.pt-6.pb-7
+        .container
+          .row
+            .col-md-6.mx-auto.text-center
+              h2.heading-black VenomStream offers everything you need.
+              p.text-muted.lead
+                | One Streaming Service,
+                | no ads, every movie and show, no payments.
+          .row.mt-5
+            .col-md-10.mx-auto
+              .row.feature-boxes
+                .col-md-12.box
+                  .icon-box.box-success
+                    .icon-box-inner
+                      span(data-feather='monitor' width='35' height='35')
+                  h5 Unlimited devices
+                  p.text-muted
+                    | Works on any computer device all for free
+                .col-md-6.box
+                  .icon-box.box-danger
+                    .icon-box-inner
+                      span(data-feather='layout' width='35' height='35')
+                  h5 Easy to use
+                  p.text-muted
+                    | Only takes a couple of clicks to get working.
+                .col-md-6.box
+                  .icon-box.box-info
+                    .icon-box-inner
+                      span(data-feather='globe' width='35' height='35')
+                  h5 Available globally
+                  p.text-muted
+                    | Movies and Shows in French and English with subtitles
+      // faq section
+      section#faq.py-7
+        .container
+          .row
+            .col-md-6.mx-auto.text-center
+              h2 Frequently asked questions
+              p.text-muted.lead Answers to most common questions.
+          .row.mt-5
+            .col-md-10.mx-auto
+              .row
+                .col-md-6.mb-5
+                  h6 Can I try it for free?
+                  p.text-muted
+                    | Yes and forever.
+                .col-md-6.mb-5
+                  h6 Do you have hidden fees?
+                  p.text-muted
+                    | No hidden fees.
+                .col-md-6.mb-5
+                  h6 What are the payment methods you accept?
+                  p.text-muted
+                    | If you want to donate you can using Paypal and Credit Card.
+                .col-md-6.mb-5
+                  h6 How often do you release updates?
+                  p.text-muted
+                    | Every Week!
+                .col-md-6.mb-5
+                  h6 What is your refund policy?
+                  p.text-muted
+                    | No refunds. Dont have time for that shit.
+                .col-md-6.mb-5
+                  h6 How can I contact you?
+                  p.text-muted
+                    | email me at ceo@venomstream.com
+      // scroll to top
+      .scroll-top
+        i.fa.fa-angle-up(aria-hidden='true')
     // jQuery first, then Popper.js, then Bootstrap JS
     script(src='https://code.jquery.com/jquery-3.2.1.min.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js')

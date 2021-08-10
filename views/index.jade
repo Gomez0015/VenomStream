@@ -4,7 +4,7 @@ block content
   if info != undefined
     script.
       alert("#{info}")
-  .navbar(id="navbar")
+  .navbar(id="navbar" )
     ul(style='display: block;')
       li
         #menuToggle(style='z-index: 2;')
@@ -52,7 +52,7 @@ block content
         a.dbox-donation-button.rightNav(href='https://donorbox.org/venom-stream-funding?default_interval=o') Donate
 
   if currentPage != undefined
-    .pageSelectorsContainer.xsmall
+    .pageSelectorsContainer.xsmall()
       .pagination
         ul
           li.paginationLi
@@ -183,7 +183,7 @@ block content
           }
   if currentPage != undefined
     if moviesArray.length >= 24
-      .pageSelectorsContainer.xsmall
+      .pageSelectorsContainer.xsmall()
         .pagination
           ul
             li.paginationLi
@@ -223,7 +223,7 @@ block content
               }
             }
           }
-    footer.footer
+    footer.footer()
       .social
         a.footerIcon(href='')
           i(class="fas fa-circle" style="color: #00e676;" id="colorPicker1")
@@ -240,7 +240,7 @@ block content
         script.
           document.getElementById("year").textContent = ("©" + new Date().getFullYear() + " - VenomStream" );
 
-  div(id="myModal" class="modal")
+  div(id="myModal" class="modal ")
     div(class="modal-content")
       span(class="close" onclick="(function(){ document.getElementById('myModal').style.display = 'none' })();return false;") &times;
       h2 Add something using title
