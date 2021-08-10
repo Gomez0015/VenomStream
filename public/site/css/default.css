@@ -10764,7 +10764,15 @@ footer h5 {
 .content-mobile {
     display: none;
     text-align: center;
-    padding: 50px;
+    padding: 4vw;
+}
+
+.content-mobile h1 {
+    font-size: 12vw;
+}
+
+.content-mobile p {
+    font-size: 4vw;
 }
 
 @media only screen and (max-width: 768px) {
@@ -10777,5 +10785,9 @@ footer h5 {
 }
 
 .whyPickVenomSteam {
-    margin-top: 100px;
+    margin-top: 20vw;
+}
+
+.whyPickVenomSteam h3 {
+    font-size: 6vw;
 }
