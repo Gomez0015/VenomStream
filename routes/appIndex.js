@@ -125,7 +125,7 @@ router.get('/', async function(req, res, next) {
             }
         }
     } else {
-        res.render('login');
+        res.redirect('/login');
     }
 });
 
@@ -615,6 +615,7 @@ router.get('/listByLanguage', async function(req, res, next) {
 
 router.get('/logout', async function(req, res, next) {
     req.session.username = null;
+    req.session.authorized = false;
     res.redirect('/app/');
 });
 

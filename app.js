@@ -136,7 +136,7 @@ app.use(function(err, req, res, next) {
 // const bcrypt = require('bcrypt');
 // const saltRounds = 10;
 
-// bcrypt.hash("gomezisboss", saltRounds, function(err, hash) {
+// bcrypt.hash("pompom4242", saltRounds, function(err, hash) {
 //     console.log(hash);
 // });
 
