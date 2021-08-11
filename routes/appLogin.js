@@ -21,7 +21,7 @@ router.post('/', async function(req, res, next) {
                     sess.username = user.username;
                     sess.favorites = user.favorites;
                     req.session.authorized = true;
-                    res.redirect('/app/');
+                    res.redirect('/');
                 } else {
                     res.render('login', { info: "Wrong Password" });
                 }
@@ -29,6 +29,8 @@ router.post('/', async function(req, res, next) {
         } else {
             res.render('login', { info: "Wrong username" });
         }
+    } else {
+        res.status(403);
     }
 });
 

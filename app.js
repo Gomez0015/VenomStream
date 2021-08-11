@@ -133,4 +133,11 @@ app.use(function(err, req, res, next) {
 //     console.log("Done Updating Movies");
 // }
 
+// const bcrypt = require('bcrypt');
+// const saltRounds = 10;
+
+// bcrypt.hash("gomezisboss", saltRounds, function(err, hash) {
+//     console.log(hash);
+// });
+
 module.exports = app;
