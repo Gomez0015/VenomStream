@@ -58,6 +58,18 @@ app.use(function(err, req, res, next) {
     res.render('error');
 });
 
+// async function checkDatabase() {
+//     var movies = await Movies.find();
+//     for (var i = 0; i < movies.length; i++) {
+//         if (movies[i].magnet_link.includes("magnet:?xt=urn:btih:0000000000000000000000000000000000000000")) {
+//             console.log(movies[i].name);
+//             await Movies.deleteOne(movies[i]);
+//         }
+//     }
+// }
+
+// checkDatabase();
+
 // Movies.updateOne({ name: "Black Widow" }, { $set: { genres: ["Action", "Comedy"] } }, function(err, course) {
 //     if (err)
 //         console.log({ response: 'err' });

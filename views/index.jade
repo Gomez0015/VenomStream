@@ -140,9 +140,9 @@ block content
             div(class="modal-content")
               span(class="close" onclick="closeMoviePopup(#{i})") &times;
               h2(style="margin: 15px;")= movie.name
-              a(style="font-size: 18px; margin: 15px;" href="sodaplayer:?url=" + movie.magnet_link + "&title=" + movie.name onclick="(function(){ document.getElementById('myModal#{i}').style.display = 'none'; })();return true;") Stream
+              a(style="font-size: 18px; margin: 15px;" href=movie.magnet_link + "&title=" + movie.name onclick="(function(){ document.getElementById('myModal#{i}').style.display = 'none'; })();return true;") Stream
               br
-              a( href="https://www.sodaplayer.com/" target="_blank") Dont have Sodaplayer? Install now
+              a( href="https://webtorrent.io/desktop/" target="_blank") Dont have Webtorrent Player? Install now
         script.
           if("#{searchLink}" != "true") {
             var genre#{i} = ("#{movie.genres[0]}".replace("&amp;", "&"));
