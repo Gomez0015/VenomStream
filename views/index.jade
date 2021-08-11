@@ -131,6 +131,7 @@ block content
                   while (document.getElementById("movieText#{i}").offsetWidth > document.getElementById("container#{i}").offsetWidth) { document.getElementById("movieText#{i}").style.fontSize = (parseInt(document.getElementById("movieText#{i}").style.fontSize.replace("px", "")) - 1 + "px")}
               p= movie.rating 
                 i(class="fas fa-star")
+                | | #{movie.release_date}
               p(class="movieLang")
                 if movie.language == "en" 
                   span(class="flag-icon flag-icon-us")

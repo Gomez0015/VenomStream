@@ -33,6 +33,9 @@ var movieSchema = new Schema({
     },
     genres: {
         type: Array,
+    },
+    release_date: {
+        type: String,
     }
 });
 

@@ -197,7 +197,7 @@ router.post('/addmovie', async function(req, res, next) {
                             res.send({ info: "Timed Out after 20 Seconds", type: 'error' });
                         } else if (torrents[0] != undefined) {
                             var magnet = await TorrentSearchApi.getMagnet(torrents[0]);
-                            await Movies.create({ name: movieTitle, description: movieData.overview, rating: movieData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + movieData.poster_path, magnet_link: magnet, popularity: movieData.popularity, full_torrent: torrents[0], movieID: Math.random().toString(36).substr(2, 9), genres: [movieDataExtended.genres[0].name] });
+                            await Movies.create({ name: movieTitle, description: movieData.overview, rating: movieData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + movieData.poster_path, magnet_link: magnet, popularity: movieData.popularity, full_torrent: torrents[0], movieID: Math.random().toString(36).substr(2, 9), genres: [movieDataExtended.genres[0].name], release_date: movieData.release_date });
                             console.log("Updating Database...");
                             getDatabaseShit();
                             res.send({ info: "Movie Added", type: "success" });
@@ -223,7 +223,7 @@ router.post('/addmovie', async function(req, res, next) {
                             console.log(torrents[currentTorrentCount].title);
                             if (torrents[currentTorrentCount].title != "No results returned") {
                                 var magnet = await TorrentSearchApi.getMagnet(torrents[currentTorrentCount]);
-                                await Movies.create({ name: movieTitle, description: movieData.overview, rating: movieData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + movieData.poster_path, magnet_link: magnet, popularity: movieData.popularity, full_torrent: torrents[currentTorrentCount], movieID: Math.random().toString(36).substr(2, 9), genres: [movieDataExtended.genres[0].name] });
+                                await Movies.create({ name: movieTitle, release_date: movieData.release_date, description: movieData.overview, rating: movieData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + movieData.poster_path, magnet_link: magnet, popularity: movieData.popularity, full_torrent: torrents[currentTorrentCount], movieID: Math.random().toString(36).substr(2, 9), genres: [movieDataExtended.genres[0].name] });
                                 console.log("Updating Database...");
                                 getDatabaseShit();
                                 res.send({ info: "Movie Added", type: "success" });
@@ -340,7 +340,7 @@ router.post('/addmovie', async function(req, res, next) {
                         const showCheck = await Movies.find({ name: showTitle[0], language: language });
                         if (showCheck[0] == undefined) {
                             var magnet = await TorrentSearchApi.getMagnet(torrents[0]);
-                            await Movies.create({ name: showTitle[0], description: showData.overview, rating: showData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + showData.poster_path, magnet_link: magnet, popularity: showData.popularity, movieID: Math.random().toString(36).substr(2, 9), genres: [showData.genres[0].name] });
+                            await Movies.create({ name: showTitle[0], release_date: showData.release_date, description: showData.overview, rating: showData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + showData.poster_path, magnet_link: magnet, popularity: showData.popularity, movieID: Math.random().toString(36).substr(2, 9), genres: [showData.genres[0].name] });
                             if (seasonsMissing.length <= 0) {
                                 console.log("Updating Database...");
                                 getDatabaseShit();
@@ -381,7 +381,7 @@ router.post('/addmovie', async function(req, res, next) {
                                 const showCheck = await Movies.find({ name: showTitle[i], language: language });
                                 if (showCheck[0] == undefined) {
                                     var magnet = await TorrentSearchApi.getMagnet(torrentsArray[i]);
-                                    await Movies.create({ name: showTitle[i], description: showData.overview, rating: showData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + showData.poster_path, magnet_link: magnet, popularity: showData.popularity, movieID: Math.random().toString(36).substr(2, 9), genres: [showData.genres[0].name] });
+                                    await Movies.create({ name: showTitle[i], release_date: showData.release_date, description: showData.overview, rating: showData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + showData.poster_path, magnet_link: magnet, popularity: showData.popularity, movieID: Math.random().toString(36).substr(2, 9), genres: [showData.genres[0].name] });
                                 }
                             }
                             if (torrentsArray.length > 0) {
@@ -422,7 +422,7 @@ router.post('/addmovie', async function(req, res, next) {
                             const showCheck = await Movies.find({ name: showTitle[i], language: language });
                             if (showCheck[0] == undefined) {
                                 var magnet = await TorrentSearchApi.getMagnet(torrentsArray[i]);
-                                await Movies.create({ name: showTitle[i], description: showData.overview, rating: showData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + showData.poster_path, magnet_link: magnet, popularity: showData.popularity, movieID: Math.random().toString(36).substr(2, 9), genres: [showData.genres[0].name] });
+                                await Movies.create({ name: showTitle[i], release_date: showData.release_date, description: showData.overview, rating: showData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + showData.poster_path, magnet_link: magnet, popularity: showData.popularity, movieID: Math.random().toString(36).substr(2, 9), genres: [showData.genres[0].name] });
                             }
                         }
                         if (torrentsArray.length > 0) {
@@ -450,7 +450,7 @@ router.post('/addmovie', async function(req, res, next) {
                             const showCheck = await Movies.find({ name: showTitle[i], language: language });
                             if (showCheck[0] == undefined) {
                                 var magnet = await TorrentSearchApi.getMagnet(torrentsArray[i]);
-                                await Movies.create({ name: showTitle[i], description: showData.overview, rating: showData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + showData.poster_path, magnet_link: magnet, popularity: showData.popularity, movieID: Math.random().toString(36).substr(2, 9), genres: [showData.genres[0].name] });
+                                await Movies.create({ name: showTitle[i], release_date: showData.release_date, description: showData.overview, rating: showData.vote_average, language: language, poster: 'https://image.tmdb.org/t/p/w342/' + showData.poster_path, magnet_link: magnet, popularity: showData.popularity, movieID: Math.random().toString(36).substr(2, 9), genres: [showData.genres[0].name] });
                             }
                         }
                         console.log("Updating Database...");

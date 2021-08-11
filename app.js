@@ -79,7 +79,7 @@ app.use(function(err, req, res, next) {
 // Movies.create({name: "Luca", description: "Un jeune garçon, Luca, vit un été inoubliable, ponctué de délicieux gelato, de savoureuses pasta et de longues balades en scooter. Luca partage ses aventures avec son nouveau meilleur ami, mais ce bonheur est menacé par un secret bien gardé : ce dernier n’est autre qu’un monstre marin venu d’un autre monde, situé juste au-dessous de la surface de l’eau…", rating: 8.1, language: "fr", poster: "https://image.tmdb.org/t/p/w342//qcHvn1nnrk9TEc3aktH0qwqW1jQ.jpg", magnet_link: "magnet:?xt=urn:btih:Y3FPY23MQL3ANXXBWR7E7VFN4K2NBTEE&tr=udp://tracker.opentrackr.org:1337/announce&tr=udp://open.stealth.si:80/announce&tr=udp://explodie.org:6969/announce&tr=udp://exodus.desync.com:6969/announce&tr=udp://tracker.internetwarriors.net:1337/announce&tr=udp://ipv4.tracker.harry.lu:80/announce&tr=udp://tracker.tiny-vps.com:6969/announce&tr=udp://9.rarbg.to:2740/announce&tr=udp://9.rarbg.com:2770/announce&tr=http://1337.abcvg.info/announce&tr=http://open.acgnxtracker.com/announce&tr=udp://tracker.torrent.eu.org:451/announce&tr=udp://zephir.monocul.us:6969/announce&tr=http://tracker.bt4g.com:2095/announce&tr=udp://opentor.org:2710/announce", popularity: 2966.59, full_torrent: { title: "Luca FRENCH WEBRIP 1080p 2021", seeds: 288, peers: 7, size: "5.26 GB", desc: "https://www.torrent9.pw/torrent/20251/luca-french-webrip-1080p-2021", provider: "Torrent9" }, movieID: "ub619mgx8", __v: 0, genres: ["Animation", "Family"] });
 
 // Script to update Database with new Schema
-// const apiKey = process.env.API_KEY;
+// const apiKey = "e46eabe7402731804b6d3bf9858dddcc";
 // const axios = require('axios');
 // const { contextIsolated } = require('process');
 
@@ -87,8 +87,7 @@ app.use(function(err, req, res, next) {
 //     const movies = await Movies.find();
 //     console.log("Starting Database Update... Total Files: " + movies.length);
 //     for (let i = 0; i < movies.length; i++) {
-//         console.log(movies[i].genres);
-//         if (movies[i].genres.length == 0) {
+//         if (movies[i].release_date == undefined) {
 //             console.log("Starting #" + i);
 //             if (movies[i].name.includes("S0") || movies[i].name.includes("Saison") || movies[i].name.includes("S1") || movies[i].name.includes("S2") || movies[i].name.includes("S3")) {
 //                 var showData = null;
@@ -101,21 +100,11 @@ app.use(function(err, req, res, next) {
 //                     })
 //                     .then(async(response) => {
 //                         showData = response.data.results[0];
-//                         var showDataExtended = null;
-//                         await axios({
-//                                 method: 'get',
-//                                 url: 'https://api.themoviedb.org/3/tv/' + showData.id + '?api_key=' + apiKey + '&language=' + movies[i].language,
-//                             })
-//                             .then(async(response) => {
-//                                 showDataExtended = response.data;
-//                                 await Movies.updateOne({ name: name, language: movies[i].language }, { $set: { genres: [showDataExtended.genres[0].name] } }, function(err, course) {
-//                                     if (err)
-//                                         console.log({ response: 'err' });
-//                                     console.log(course);
-//                                 });
-//                             }, (error) => {
-//                                 console.log(error);
-//                             });
+//                         console.log(showData.release_date);
+//                         await Movies.updateOne({ name: name, language: movies[i].language }, { $set: { release_date: showData.release_date } }, function(err, course) {
+//                             if (err)
+//                                 console.log({ response: 'err' });
+//                         });
 //                     }, (error) => {
 //                         console.log(error);
 //                     });
@@ -129,21 +118,11 @@ app.use(function(err, req, res, next) {
 //                     })
 //                     .then(async(response) => {
 //                         movieData = response.data.results[0];
-//                         var movieDataExtended = null;
-//                         await axios({
-//                                 method: 'get',
-//                                 url: 'https://api.themoviedb.org/3/movie/' + movieData.id + '?api_key=' + apiKey + '&language=' + movies[i].language,
-//                             })
-//                             .then(async(response) => {
-//                                 movieDataExtended = response.data;
-//                                 await Movies.updateOne({ name: movies[i].name, language: movies[i].language }, { $set: { genres: [movieDataExtended.genres[0].name] } }, function(err, course) {
-//                                     if (err)
-//                                         console.log({ response: 'err' });
-//                                     console.log(course);
-//                                 });
-//                             }, (error) => {
-//                                 console.log(error);
-//                             });
+//                         console.log(movieData.release_date);
+//                         await Movies.updateOne({ name: movies[i].name, language: movies[i].language }, { $set: { release_date: movieData.release_date } }, function(err, course) {
+//                             if (err)
+//                                 console.log({ response: 'err' });
+//                         });
 //                     }, (error) => {
 //                         console.log(error);
 //                     });
@@ -151,6 +130,7 @@ app.use(function(err, req, res, next) {
 //             }
 //         }
 //     }
+//     console.log("Done Updating Movies");
 // }
 
 module.exports = app;
