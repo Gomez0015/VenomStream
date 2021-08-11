@@ -3,7 +3,11 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-    res.render('siteHome');
+    if (req.session.authorized == true) {
+        res.render('siteHome');
+    } else {
+        res.redirect('/app/login');
+    }
 });
 
 module.exports = router;

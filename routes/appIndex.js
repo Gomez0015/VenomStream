@@ -97,31 +97,35 @@ async function getMoviesToShow(pageObject, movies, query) {
 
 /* GET home page. */
 router.get('/', async function(req, res, next) {
-    var sess = req.session;
-    var pageObject = getCurrentPage(req);
-    var moviesArray = homeMovies.slice(0);
-    var moviesObject = await getMoviesToShow(pageObject, moviesArray.reverse());
+    if (req.session.authorized == true) {
+        var sess = req.session;
+        var pageObject = getCurrentPage(req);
+        var moviesArray = homeMovies.slice(0);
+        var moviesObject = await getMoviesToShow(pageObject, moviesArray.reverse());
 
-    if (moviesObject.moviesArray[0] == undefined) {
-        pageObject.currentPage -= 1;
-        moviesObject = await getMoviesToShow(pageObject, moviesArray.reverse());
-    }
-    var info = sess.info;
-    req.session.themeColor = req.session.themeColor == undefined ? "greenColors" : req.session.themeColor;
-    if (sess.username != null) {
-        if (sess.info != null) {
-            sess.info = null;
-            res.render('index', { title: 'VenomStream', moviesArray: moviesObject.moviesArray, categories: moviesObject.categories, username: sess.username, favorites: sess.favorites, info: info, currentPage: pageObject.currentPage, themeColor: req.session.themeColor });
+        if (moviesObject.moviesArray[0] == undefined) {
+            pageObject.currentPage -= 1;
+            moviesObject = await getMoviesToShow(pageObject, moviesArray.reverse());
+        }
+        var info = sess.info;
+        req.session.themeColor = req.session.themeColor == undefined ? "greenColors" : req.session.themeColor;
+        if (sess.username != null) {
+            if (sess.info != null) {
+                sess.info = null;
+                res.render('index', { title: 'VenomStream', moviesArray: moviesObject.moviesArray, categories: moviesObject.categories, username: sess.username, favorites: sess.favorites, info: info, currentPage: pageObject.currentPage, themeColor: req.session.themeColor });
+            } else {
+                res.render('index', { title: 'VenomStream', moviesArray: moviesObject.moviesArray, categories: moviesObject.categories, username: sess.username, favorites: sess.favorites, currentPage: pageObject.currentPage, themeColor: req.session.themeColor });
+            }
         } else {
-            res.render('index', { title: 'VenomStream', moviesArray: moviesObject.moviesArray, categories: moviesObject.categories, username: sess.username, favorites: sess.favorites, currentPage: pageObject.currentPage, themeColor: req.session.themeColor });
+            if (sess.info != null) {
+                sess.info = null;
+                res.render('index', { title: 'VenomStream', moviesArray: moviesObject.moviesArray, categories: moviesObject.categories, info: info, currentPage: pageObject.currentPage, themeColor: req.session.themeColor });
+            } else {
+                res.render('index', { title: 'VenomStream', moviesArray: moviesObject.moviesArray, categories: moviesObject.categories, currentPage: pageObject.currentPage, themeColor: req.session.themeColor });
+            }
         }
     } else {
-        if (sess.info != null) {
-            sess.info = null;
-            res.render('index', { title: 'VenomStream', moviesArray: moviesObject.moviesArray, categories: moviesObject.categories, info: info, currentPage: pageObject.currentPage, themeColor: req.session.themeColor });
-        } else {
-            res.render('index', { title: 'VenomStream', moviesArray: moviesObject.moviesArray, categories: moviesObject.categories, currentPage: pageObject.currentPage, themeColor: req.session.themeColor });
-        }
+        res.render('login');
     }
 });
 
