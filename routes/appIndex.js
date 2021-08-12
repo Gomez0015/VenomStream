@@ -125,7 +125,7 @@ router.get('/', async function(req, res, next) {
             }
         }
     } else {
-        res.redirect('/login');
+        res.redirect('/app/login');
     }
 });
 
